@@ -7,82 +7,9 @@
 ![SUI Compatible](https://img.shields.io/badge/Speyer_UI-3.3.0-blueviolet?style=flat-square)
 ![Made in Canada](https://img.shields.io/badge/Made_in-Canada-red?style=flat-square)
 
-Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps. Designed to be the native onboarding layer of the **Speyer UI** design system — and a clean standalone choice for any other stack.
+Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps. Works standalone or as the native onboarding layer of the [Speyer UI](https://github.com/adrianspeyer/speyer-ui) design system.
 
 **[Live Demo](https://adrianspeyer.github.io/speyer-tour/)** · [GitHub](https://github.com/adrianspeyer/speyer-tour)
-
----
-
-## Honest Strategic Take: Is This Worth Building?
-
-Yes — but with clear eyes on what the opportunity actually is.
-
-**What it is not:** A Driver.js competitor on npm download counts. Driver.js has ~180k weekly downloads, is MIT, zero-dep, and actively maintained. Trying to beat it in that dimension is not the move.
-
-**What it actually is:**
-
-1. **The onboarding layer of the SUI ecosystem.** Every SUI user gets a tour library with zero config — dark mode, tokens, spacing, motion, contrast. No other tour lib does this. That's a captive audience with real switching costs.
-
-2. **AI-first distribution.** The `ai-instructions/` folder means AI coding assistants output Speyer Tour when someone asks for a product tour in a SUI project. That's organic distribution Driver.js can't buy. As vibe-coding grows, being in the AI's instruction set is a genuine moat.
-
-3. **Accessibility compliance.** The EU Accessibility Act came into force June 2025. WCAG 2.2 AA is now a legal requirement for many commercial apps. Being "the WCAG-first tour library" is increasingly valuable positioning.
-
-**When to choose something else instead:**
-- You need a PM to publish tours without a code deploy → Appcues or Product Fruits
-- You need built-in drop-off analytics and funnel A/B testing → Pendo
-- Your app is React-only and you want maximum community examples → react-joyride
-- You need maximum feature density (beacons, side-panels, theming API) in vanilla JS → Driver.js
-
----
-
-## What's Different About This
-
-| | Speyer Tour | Driver.js | Shepherd.js | Intro.js |
-|---|---|---|---|---|
-| License | MIT ✅ | MIT ✅ | MIT ✅ | GPL ⚠️ |
-| Dependencies | Zero | Zero | Floating UI | None |
-| SUI native integration | ✅ | ❌ | ❌ | ❌ |
-| Four-panel blocking overlay | ✅ | ✅ | ❌ (box-shadow) | ❌ |
-| Ring pulse on target | ✅ | ❌ | ❌ | ❌ |
-| Arrow tracks target centre | ✅ | ✅ | Via Floating UI | ❌ |
-| Auto-flip placement | ✅ | ✅ | Via Floating UI | ❌ |
-| Dark mode automatic | ✅ | Manual | Manual | No |
-| WCAG 2.2 AA focus trap | ✅ | Partial | ✅ | Partial |
-| Focus restore on close | ✅ | ❌ | ❌ | ❌ |
-| XSS-safe content injection | ✅ | ❌ | ❌ | ❌ |
-| Floating (no-target) steps | ✅ | ❌ | ✅ | ❌ |
-| Mobile auto-stack | ✅ | Partial | Partial | Partial |
-| Smart mobile positioning | ✅ | ❌ | ❌ | ❌ |
-| Multi-lingual labels | ✅ | ❌ | ✅ | ✅ |
-| Per-step lifecycle hooks | ✅ | ❌ | ✅ | ❌ |
-| Lazy step evaluation | ✅ | ❌ | ❌ | ❌ |
-| destroy() for SPAs | ✅ | ❌ | ✅ | ❌ |
-| Target resize observation | ✅ | ❌ | ❌ | ❌ |
-| AI-ready instructions | ✅ | ❌ | ❌ | ❌ |
-
-**On Intro.js:** The most googled tour library. Its GPL license means commercial use requires purchasing a separate license. Many teams discover this after shipping.
-
-**On Shepherd.js:** Most feature-complete. Floating UI positioning is excellent. ~18KB gzipped. Worth it if you're in a complex React/Vue app with time to configure it properly.
-
-**On Driver.js:** The closest honest competitor for standalone use. Solid, MIT, well-maintained. If you're not using SUI, Driver.js deserves a serious look. Speyer Tour wins on SUI integration, XSS safety, and accessibility depth.
-
----
-
-## File Structure
-
-```
-speyer-tour/
-├── src/
-│   ├── speyer-tour.js      Core library (~7 KB unminified)
-│   └── speyer-tour.css     Styles with standalone defaults + SUI integration
-├── index.html              Full-featured demo (SUI 3.3.0 + SUI Icons)
-├── ai-instructions/
-│   ├── instructions.md     Claude Code system prompt
-│   ├── .cursorrules        Cursor IDE rules
-│   ├── ai-prompt-template.md  ChatGPT / Gemini prompt
-│   └── llms.txt            LLM crawler context
-└── README.md
-```
 
 ---
 
@@ -140,6 +67,52 @@ const tour = new SpeyerTour({
 });
 
 tour.start();
+```
+
+---
+
+## How It Compares
+
+| | Speyer Tour | Driver.js | Shepherd.js | Intro.js |
+|---|---|---|---|---|
+| Licence | MIT | MIT | MIT | GPL ⚠️ |
+| Dependencies | Zero | Zero | Floating UI | None |
+| SUI native integration | ✅ | — | — | — |
+| Four-panel blocking overlay | ✅ | ✅ | ❌ (box-shadow) | ❌ |
+| Ring pulse on target | ✅ | — | — | — |
+| Arrow tracks target centre | ✅ | ✅ | Via Floating UI | — |
+| Auto-flip placement | ✅ | ✅ | Via Floating UI | — |
+| Dark mode automatic | ✅ | Manual | Manual | No |
+| WCAG 2.2 AA focus trap | ✅ | Partial | ✅ | Partial |
+| Focus restore on close | ✅ | — | — | — |
+| XSS-safe content injection | ✅ | — | — | — |
+| Floating (no-target) steps | ✅ | — | ✅ | — |
+| Smart mobile positioning | ✅ | — | — | — |
+| Multi-lingual labels | ✅ | — | ✅ | ✅ |
+| Per-step lifecycle hooks | ✅ | — | ✅ | — |
+| Lazy step evaluation | ✅ | — | — | — |
+| destroy() for SPAs | ✅ | — | ✅ | — |
+| Target resize observation | ✅ | — | — | — |
+| AI-ready instructions | ✅ | — | — | — |
+
+**A note on Intro.js:** Its GPL licence means commercial use requires purchasing a separate licence. Many teams discover this after shipping.
+
+---
+
+## File Structure
+
+```
+speyer-tour/
+├── src/
+│   ├── speyer-tour.js      Core library (~7 KB unminified)
+│   └── speyer-tour.css     Styles with standalone defaults + SUI integration
+├── index.html              Full-featured demo (SUI 3.3.0 + SUI Icons)
+├── ai-instructions/
+│   ├── instructions.md     Claude Code system prompt
+│   ├── .cursorrules        Cursor IDE rules
+│   ├── ai-prompt-template.md  ChatGPT / Gemini prompt
+│   └── llms.txt            LLM crawler context
+└── README.md
 ```
 
 ---
@@ -360,6 +333,17 @@ The `ai-instructions/` folder lets AI coding tools implement Speyer Tour without
 
 ---
 
+## When to Use Something Else
+
+Speyer Tour is a code-first library for developers who want full control. If your needs are different, these are solid alternatives:
+
+- **No-code tour builder** (PMs publish tours without deploys) → [Appcues](https://www.appcues.com/) or [Product Fruits](https://www.productfruits.com/)
+- **Drop-off analytics and A/B testing** → [Pendo](https://www.pendo.io/)
+- **React-only with maximum community examples** → [react-joyride](https://github.com/gilbarbara/react-joyride)
+- **Maximum feature density in vanilla JS** (beacons, side-panels, theming API) → [Driver.js](https://driverjs.com/)
+
+---
+
 ## Changelog
 
 ### v3.0.0 — 2026-02-24
@@ -435,7 +419,7 @@ First production release.
 
 ---
 
-## License
+## Licence
 
 [MIT](./LICENSE) — free for personal and commercial use.
 
