@@ -309,7 +309,7 @@ export class SpeyerTour {
       return;
     }
 
-    if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (targetEl) targetEl.scrollIntoView({ behavior: 'instant', block: 'center' });
 
     // Toggle modes
     this._el.tooltip.classList.toggle('is-floating', isFloating);
