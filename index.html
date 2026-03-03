@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speyer Tour v3.0.0 — Demo</title>
+  <title>Speyer Tour v3.0.0 — LemonCRM Demo</title>
 
   <!--
     ═══════════════════════════════════════════════
@@ -344,6 +344,32 @@
     @media (max-width: 480px) {
       .stats-row { grid-template-columns: 1fr; }
     }
+
+    /* ── Dark-mode tour highlight fix ─────────────────────── */
+    /* In dark mode the page background is already dark, so the
+       default overlay alpha (~0.65) creates minimal contrast
+       around highlighted elements. Boosting the overlay and
+       ring pulse makes the tour cutout visually pop. */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) .speyer-tour-panel,
+      :root:not([data-theme]) .speyer-tour-overlay {
+        background: rgba(0, 0, 0, 0.82);
+      }
+      :root:not([data-theme]) .speyer-tour-ring {
+        --speyer-tour-blue-ring:     rgba(96, 165, 250, 0.50);
+        --speyer-tour-blue-ring-out: rgba(96, 165, 250, 0.08);
+        border-width: 3px;
+      }
+    }
+    [data-theme="dark"] .speyer-tour-panel,
+    [data-theme="dark"] .speyer-tour-overlay {
+      background: rgba(0, 0, 0, 0.82);
+    }
+    [data-theme="dark"] .speyer-tour-ring {
+      --speyer-tour-blue-ring:     rgba(96, 165, 250, 0.50);
+      --speyer-tour-blue-ring-out: rgba(96, 165, 250, 0.08);
+      border-width: 3px;
+    }
   </style>
 </head>
 <body>
@@ -353,8 +379,8 @@
   <!-- ═══ Sidebar ════════════════════════════════════════════════════════ -->
   <aside class="app-sidebar">
     <a class="sidebar-brand" href="#" id="sidebar-brand">
-      <svg class="sui-icon sui-icon-xl" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--sui-blue-primary);"><use href="#sui-icon-ai-sparkles"/></svg>
-      Nimbus CRM
+      <svg class="sui-icon sui-icon-xl" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--sui-warning-strong);"><use href="#sui-icon-ai-sparkles"/></svg>
+      LemonCRM
     </a>
 
     <nav class="sidebar-nav">

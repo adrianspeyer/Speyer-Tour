@@ -100,7 +100,7 @@ tour.start();
 
 ## Demo
 
-The `index.html` demo renders a **CRM dashboard** (Nimbus CRM) built with Speyer UI 3.3.1 and SUI Icons. It exercises every Speyer Tour feature across 10 steps: floating intro/outro slides, all four placement directions, the pulsing highlight ring, auto-flip, lifecycle callbacks logged to an on-page event log, and a Replay button for repeated testing.
+The `index.html` demo renders a **CRM dashboard** (LemonCRM) built with Speyer UI 3.3.1 and SUI Icons. It exercises every Speyer Tour feature across 10 steps: floating intro/outro slides, all four placement directions, the pulsing highlight ring, auto-flip, lifecycle callbacks logged to an on-page event log, and a Replay button for repeated testing.
 
 The demo also includes light interactivity — sidebar navigation switches pages, quick-action buttons fire toast notifications, and the dark-mode toggle syncs with the theme — to show how Speyer Tour overlays on a working interface without interfering with it.
 
@@ -115,7 +115,7 @@ speyer-tour/
 ├── src/
 │   ├── speyer-tour.js      Core library (~7 KB unminified)
 │   └── speyer-tour.css     Styles with standalone defaults + SUI integration
-├── index.html              Full-featured CRM demo (SUI 3.3.1 + SUI Icons)
+├── index.html              Full-featured LemonCRM demo (SUI 3.3.1 + SUI Icons)
 ├── ai-instructions/
 │   ├── instructions.md     Claude Code system prompt
 │   ├── .cursorrules        Cursor IDE rules
