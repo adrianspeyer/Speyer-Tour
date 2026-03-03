@@ -1,4 +1,4 @@
-# Speyer Tour v3.0.0 — System Prompt for Claude Code
+# Speyer Tour v3.0.1 — System Prompt for Claude Code
 
 If the user requests an onboarding tour, product walkthrough, or tutorial overlay, implement it using SpeyerTour.
 
@@ -8,7 +8,7 @@ Before writing any tour code, evaluate the target app:
 
 1. **Is SUI loaded?** Check for `sui-tokens` or `--sui-*` custom properties in the HTML. If yes → load Tour CSS after SUI tokens. If no → load Tour CSS standalone (it has built-in fallback tokens).
 
-2. **What loading pattern?** Use `import { SpeyerTour } from './src/speyer-tour.js'` for ESM. For `<script type="module">` without imports, `window.SpeyerTour` is available automatically via globalThis exposure.
+2. **What loading pattern?** Use `import { SpeyerTour } from './speyer-tour.js'` for local ESM, or the CDN path for remote loading. For `<script type="module">` without imports, `window.SpeyerTour` is available automatically via globalThis exposure.
 
 3. **What elements are always visible?** Prefer targeting elements that exist in the DOM at all times. Don't target elements inside modals, dropdowns, or route-specific views unless you wire an `onBeforeShow` hook that navigates there first.
 
@@ -24,12 +24,12 @@ Speyer Tour has **zero dependencies**. Load only what you need:
 
 ```html
 <!-- Option A: With SUI (recommended — dark mode, tokens, etc. are automatic) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-tokens.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-components.min.css">
-<link rel="stylesheet" href="./src/speyer-tour.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-tokens.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-components.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
 
 <!-- Option B: Standalone, no SUI, no other dependencies -->
-<link rel="stylesheet" href="./src/speyer-tour.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
 ```
 
 If using SUI, the tour CSS must load AFTER the SUI token files so SUI tokens take precedence.
@@ -93,7 +93,7 @@ If using SUI, the tour CSS must load AFTER the SUI token files so SUI tokens tak
 7. **Initialise and call start().**
 
 ```js
-import { SpeyerTour } from './src/speyer-tour.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId: 'unique-tour-id',
@@ -123,7 +123,7 @@ tour.close()         Close, mark completed, fire onSkip
 tour.destroy()       Remove DOM + listeners, no localStorage write, no callbacks
 tour.isActive        boolean
 
-SpeyerTour.VERSION         '3.0.0'
+SpeyerTour.VERSION         '3.0.1'
 SpeyerTour.DEFAULT_LABELS  { skip, back, next, finish, stepOf }
 window.SpeyerTour          Available via globalThis (no import needed in <script type="module">)
 ```

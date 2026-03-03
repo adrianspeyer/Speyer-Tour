@@ -1,4 +1,4 @@
-# Speyer Tour v3.0.0 — AI Prompt Template (ChatGPT / Gemini)
+# Speyer Tour v3.0.1 — AI Prompt Template (ChatGPT / Gemini)
 
 Use this when asking an AI to add a product tour to your app.
 
@@ -6,7 +6,7 @@ Use this when asking an AI to add a product tour to your app.
 
 **Prompt:**
 
-I want to add an onboarding tour to my web app using Speyer Tour v3.0.0. Here are the files: [paste or attach your HTML/JS].
+I want to add an onboarding tour to my web app using Speyer Tour v3.0.1. Here are the files: [paste or attach your HTML/JS].
 
 Speyer Tour is a zero-dependency, WCAG 2.2 AA accessible tour overlay library.
 
@@ -15,11 +15,11 @@ Please:
 1. Evaluate my app first: Is SUI loaded? Is it an SPA? Are target elements always visible? Is it multi-lingual?
 
 2. Add the tour CSS to `<head>` after any SUI token files:
-   `<link rel="stylesheet" href="./src/speyer-tour.css">`
+   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">`
 
 3. Add a `<script type="module">` at the bottom of `<body>`:
    ```js
-   import { SpeyerTour } from './src/speyer-tour.js';
+   import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
    ```
    (Or use `window.SpeyerTour` if you prefer no import statement.)
 

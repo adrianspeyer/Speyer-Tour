@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speyer Tour v3.0.0 — LemonCRM Demo</title>
+  <title>Speyer Tour v3.0.1 — LemonCRM Demo</title>
 
   <!--
     ═══════════════════════════════════════════════
@@ -28,7 +28,7 @@
   </script>
 
   <!-- Speyer Tour: must load AFTER SUI tokens so SUI takes precedence -->
-  <link rel="stylesheet" href="./src/speyer-tour.css">
+  <link rel="stylesheet" href="./speyer-tour.css">
 
   <style>
     /* ── App Shell ──────────────────────────────────────────── */
@@ -667,9 +667,9 @@
 &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-components.min.css"&gt;
 
 &lt;!-- 2. Speyer Tour (after SUI) --&gt;
-&lt;link rel="stylesheet" href="speyer-tour.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css"&gt;
 &lt;script type="module"&gt;
-  import { SpeyerTour } from './speyer-tour.js';
+  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
 
   const tour = new SpeyerTour({
     tourId: 'welcome-tour',
@@ -689,9 +689,9 @@
               Zero dependencies. The CSS has its own light/dark defaults. Works with Bootstrap, Tailwind, your own stylesheet, or a blank page.
             </p>
 <pre>&lt;!-- Just Speyer Tour --&gt;
-&lt;link rel="stylesheet" href="speyer-tour.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css"&gt;
 &lt;script type="module"&gt;
-  import { SpeyerTour } from './speyer-tour.js';
+  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
 
   const tour = new SpeyerTour({
     tourId:       'onboarding',
@@ -778,7 +778,7 @@ tour.isActive       // boolean</pre>
 
 <!-- ═══ Speyer Tour ════════════════════════════════════════════════════ -->
 <script type="module">
-  import { SpeyerTour } from './src/speyer-tour.js';
+  import { SpeyerTour } from './speyer-tour.js';
 
   // ── Event log ──────────────────────────────────────────────────────
   function log(emoji, msg) {

@@ -1,6 +1,6 @@
 # Speyer Tour
 
-![Version](https://img.shields.io/badge/version-3.0.0-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-3.0.1-blue?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square)
 ![Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen?style=flat-square)
 ![WCAG](https://img.shields.io/badge/WCAG-2.2_AA-success?style=flat-square)
@@ -16,7 +16,7 @@ Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps. Wor
 
 ### With Speyer UI (Recommended)
 
-Load SUI tokens before `speyer-tour.css`. The tour inherits your full design system — dark mode, high contrast, reduced motion — automatically.
+Load SUI tokens before Speyer Tour's CSS. The tour inherits your full design system — dark mode, high contrast, reduced motion — automatically.
 
 ```html
 <!-- 1. SUI tokens first -->
@@ -24,11 +24,11 @@ Load SUI tokens before `speyer-tour.css`. The tour inherits your full design sys
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-components.min.css">
 
 <!-- 2. Speyer Tour after SUI tokens -->
-<link rel="stylesheet" href="./src/speyer-tour.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
 ```
 
 ```js
-import { SpeyerTour } from './src/speyer-tour.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId: 'welcome-tour',
@@ -48,11 +48,11 @@ tour.start(); // Runs once per user (localStorage), then never again
 Works with Bootstrap, Tailwind, your own CSS, or a blank page. The CSS ships its own light/dark/motion defaults.
 
 ```html
-<link rel="stylesheet" href="./src/speyer-tour.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
 ```
 
 ```js
-import { SpeyerTour } from './src/speyer-tour.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId:       'onboarding',
@@ -112,15 +112,18 @@ The demo also includes light interactivity — sidebar navigation switches pages
 
 ```
 speyer-tour/
-├── src/
-│   ├── speyer-tour.js      Core library (~7 KB unminified)
-│   └── speyer-tour.css     Styles with standalone defaults + SUI integration
-├── index.html              Full-featured LemonCRM demo (SUI 3.3.1 + SUI Icons)
+├── speyer-tour.js           Core library (unminified, ~31 KB)
+├── speyer-tour.css          Styles with standalone defaults + SUI integration
+├── dist/
+│   ├── speyer-tour.min.js   Minified JS (~14 KB)
+│   └── speyer-tour.min.css  Minified CSS (~11 KB)
+├── index.html               Full-featured LemonCRM demo (SUI 3.3.1 + SUI Icons)
 ├── ai-instructions/
-│   ├── instructions.md     Claude Code system prompt
-│   ├── .cursorrules        Cursor IDE rules
+│   ├── instructions.md      Claude Code system prompt
+│   ├── .cursorrules         Cursor IDE rules
 │   ├── ai-prompt-template.md  ChatGPT / Gemini prompt
-│   └── llms.txt            LLM crawler context
+│   └── llms.txt             LLM crawler context
+├── package.json             Build scripts (clean-css-cli + terser)
 └── README.md
 ```
 
@@ -204,7 +207,7 @@ tour.close()         // Close now, records as skipped, fires onSkip
 tour.destroy()       // Clean teardown — removes DOM + listeners, does NOT write localStorage
 tour.isActive        // boolean — whether a tour is currently running
 
-SpeyerTour.VERSION         // '3.0.0'
+SpeyerTour.VERSION         // '3.0.1'
 SpeyerTour.DEFAULT_LABELS  // { skip, back, next, finish, stepOf }
 ```
 
@@ -325,7 +328,7 @@ Override Speyer Tour's own variables anywhere after the stylesheet:
 }
 ```
 
-Full variable list is in `src/speyer-tour.css` under `/* Standalone Defaults */`.
+Full variable list is in `speyer-tour.css` under `/* Standalone Defaults */`.
 
 ---
 
@@ -354,6 +357,19 @@ Speyer Tour is a code-first library for developers who want full control. If you
 ---
 
 ## Changelog
+
+### v3.0.1 — 2026-03-03
+
+**Bug fixes:**
+
+- **Scroll positioning fix.** Changed `scrollIntoView({ behavior: 'smooth' })` to `behavior: 'instant'`. The smooth scroll animation caused `IntersectionObserver` to fire mid-scroll, so `getBoundingClientRect()` read an intermediate position — placing the highlight ring and overlay panels at the wrong coordinates. Resizing the window masked the bug by re-running `_positionElements()` after the scroll finished. Instant scroll ensures the target is at its final position when the layout is measured.
+
+**Build:**
+
+- **Added `dist/` folder** with minified assets: `speyer-tour.min.js` (~14 KB) and `speyer-tour.min.css` (~11 KB). Built with terser + clean-css-cli, matching the Speyer UI build pipeline.
+- **Added `package.json`** with `npm run build` script.
+- **License banner preserved** in minified output (switched source comment to `/*!` convention).
+- **CDN-ready.** Recommended jsDelivr paths now point to `dist/` for production use.
 
 ### v3.0.0 — 2026-02-24
 

@@ -1,4 +1,4 @@
-# Speyer Tour v3.0.0
+# Speyer Tour v3.0.1
 
 > Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps.
 > Works standalone or as the native onboarding layer of the Speyer UI design system.
@@ -14,10 +14,10 @@
 
 ## Quick Start
 ```html
-<link rel="stylesheet" href="./src/speyer-tour.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
 ```
 ```js
-import { SpeyerTour } from './src/speyer-tour.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId: 'my-app-v1',
@@ -68,7 +68,7 @@ icons: {
 - tour.close() — writes localStorage, fires onSkip
 - tour.destroy() — clean teardown, no localStorage, no callbacks (for SPAs)
 - tour.isActive — boolean
-- SpeyerTour.VERSION — '3.0.0'
+- SpeyerTour.VERSION — '3.0.1'
 - SpeyerTour.DEFAULT_LABELS — { skip, back, next, finish, stepOf }
 - window.SpeyerTour — available via globalThis (no import needed)
 
@@ -98,7 +98,7 @@ icons: {
 - Dynamic arrow tracks target centre
 - Auto-flip when tooltip would overflow viewport
 - Smart mobile positioning (tooltip opposite target's viewport half)
-- IntersectionObserver scroll confirmation (replaces setTimeout)
+- IntersectionObserver scroll confirmation with instant scrolling
 - ResizeObserver on highlighted target (sidebar collapse, accordion)
 - Focus trap + focus restore (WCAG 2.2 AA)
 - Escape to close, Tab cycles within tooltip

@@ -1,5 +1,5 @@
-/**
- * Speyer Tour v3.0.0
+/*!
+ * Speyer Tour v3.0.1
  * Accessible, zero-dependency tutorial overlays for PWAs and Web Apps.
  * https://github.com/adrianspeyer/speyer-tour
  * MIT License — Made in Canada with love 🇨🇦
@@ -33,7 +33,7 @@ export class SpeyerTour {
   };
 
   /** Library version. */
-  static VERSION = '3.0.0';
+  static VERSION = '3.0.1';
 
   /**
    * @param {object} config
