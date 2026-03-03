@@ -1,0 +1,109 @@
+# Speyer Tour v3.0.0
+
+> Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps.
+> Works standalone or as the native onboarding layer of the Speyer UI design system.
+> MIT License. Made in Canada.
+
+## Pre-Integration Evaluation (do this first)
+1. Is SUI loaded? → load Tour CSS after SUI tokens if yes
+2. Module or vanilla? → use import or <script type="module"> (window.SpeyerTour available via globalThis)
+3. Always-visible targets? → avoid modals/dropdowns unless onBeforeShow navigates first
+4. Multi-lingual? → only offer labels if app genuinely serves multiple languages
+5. SPA? → recommend destroy() on route change, lazy steps
+6. Stable IDs on targets? → add them if missing
+
+## Quick Start
+```html
+<link rel="stylesheet" href="./src/speyer-tour.css">
+```
+```js
+import { SpeyerTour } from './src/speyer-tour.js';
+
+const tour = new SpeyerTour({
+  tourId: 'my-app-v1',
+  allowClose: true,
+  steps: [
+    { target: null,        title: 'Welcome',    content: 'Quick overview of the app.' },
+    { target: '#sidebar',  title: 'Navigation', content: 'Main sections here.', placement: 'right' },
+    { target: null,        title: 'All done!',  content: 'Enjoy!' },
+  ],
+});
+tour.start();
+```
+
+## Multi-lingual (only if app is multi-lingual)
+```js
+i18n: true,  // metadata flag for AI tooling — not read at runtime
+labels: { skip: 'Passer', back: 'Retour', next: 'Suivant', finish: 'Terminer', stepOf: '{current} sur {total}' }
+```
+
+## Button Icons (optional, host provides)
+```js
+icons: {
+  next: '<svg class="icon icon-sm"><use href="#nav-arrow-right"/></svg>',
+  back: '<svg class="icon icon-sm"><use href="#nav-arrow-left"/></svg>',
+}
+```
+
+## Step Hooks (for SPAs / dynamic apps)
+```js
+{
+  target: '#pipeline',
+  title: 'Pipeline',
+  content: 'Your deals.',
+  onBeforeShow: async () => {
+    document.querySelector('[data-view="pipeline"]')?.click();
+    await new Promise(r => setTimeout(r, 300));
+    return !!document.querySelector('#pipeline'); // false = skip step
+  },
+  onAfterShow: ({ step }) => analytics.track('step_seen', { title: step.title }),
+}
+```
+
+## API
+- tour.start() — respects localStorage; tour.start(true) — force
+- tour.reset() — clear localStorage + restart (silent)
+- tour.next() / tour.back()
+- tour.goToStep(3) — jump to step index (clamped to valid range)
+- tour.close() — writes localStorage, fires onSkip
+- tour.destroy() — clean teardown, no localStorage, no callbacks (for SPAs)
+- tour.isActive — boolean
+- SpeyerTour.VERSION — '3.0.0'
+- SpeyerTour.DEFAULT_LABELS — { skip, back, next, finish, stepOf }
+- window.SpeyerTour — available via globalThis (no import needed)
+
+## Constructor Options
+- tourId (string, required) — localStorage key
+- steps (Array|Function, required) — step objects or lazy function
+- allowClose (boolean, false) — click overlay to close
+- padding (number, 8) — px gap around target
+- tooltipWidth (number, 320) — px, auto on mobile
+- i18n (boolean, false) — metadata flag for AI tooling, not read at runtime
+- labels (object) — button text overrides
+- icons (object) — optional { next, back, skip } icon HTML, prepended before label
+- onStart, onStep, onComplete, onSkip — lifecycle callbacks
+- onTargetMissing — called when target not found (default: warn + skip)
+
+## Step Object
+- target (string|null) — CSS selector or null for floating
+- title (string) — textContent only, XSS-safe
+- content (string) — textContent only, XSS-safe
+- placement ('bottom'|'top'|'left'|'right') — auto-flips
+- onBeforeShow (function) — async-safe, return false to skip
+- onAfterShow (function) — fires after positioned
+
+## Key Features
+- Four-panel blocking overlay (no box-shadow hack)
+- Ring pulse animation on highlighted element
+- Dynamic arrow tracks target centre
+- Auto-flip when tooltip would overflow viewport
+- Smart mobile positioning (tooltip opposite target's viewport half)
+- IntersectionObserver scroll confirmation (replaces setTimeout)
+- ResizeObserver on highlighted target (sidebar collapse, accordion)
+- Focus trap + focus restore (WCAG 2.2 AA)
+- Escape to close, Tab cycles within tooltip
+- localStorage one-shot (shows once per tourId)
+- Works with or without Speyer UI — standalone dark mode fallbacks
+- Per-step lifecycle hooks for SPA navigation
+- destroy() for clean SPA teardown
+- goToStep() for section-jump navigation

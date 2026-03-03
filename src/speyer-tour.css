@@ -1,0 +1,473 @@
+/*!
+ * Speyer Tour v3.0.0 — Core Styles
+ * Standalone: zero deps, full light/dark/high-contrast/reduced-motion defaults.
+ * With SUI: load sui-tokens.css first and every token is inherited automatically.
+ * https://github.com/adrianspeyer/speyer-tour
+ * MIT License — Made in Canada with love 🇨🇦
+ */
+
+/* ==========================================================================
+   Standalone Defaults
+   Full set of --speyer-tour-* variables. When SUI is loaded, --sui-* tokens
+   take precedence via the var(--sui-xyz, var(--speyer-tour-xyz)) fallback chain.
+   Override any of these after loading speyer-tour.css for custom theming.
+   ========================================================================== */
+
+:root {
+  --speyer-tour-overlay:            rgba(15, 23, 42, 0.65);
+  --speyer-tour-bg:                 #ffffff;
+  --speyer-tour-border:             #e5edf5;
+  --speyer-tour-border-width:       1px;
+  --speyer-tour-radius-sm:          8px;
+  --speyer-tour-radius-md:          12px;
+  --speyer-tour-radius-lg:          16px;
+  --speyer-tour-radius-full:        9999px;
+  --speyer-tour-text-primary:       #0f172a;
+  --speyer-tour-text-secondary:     #475569;
+  --speyer-tour-text-muted:         #5c6c80;
+  --speyer-tour-text-inverse:       #ffffff;
+  --speyer-tour-bg-elevated:        #f1f5f9;
+  --speyer-tour-blue:               #2563eb;
+  --speyer-tour-blue-hover:         #1d4ed8;
+  --speyer-tour-blue-active:        #1e40af;
+  --speyer-tour-blue-focus:         #93c5fd;
+  --speyer-tour-blue-ring:          rgba(37, 99, 235, 0.25);
+  --speyer-tour-blue-ring-out:      rgba(37, 99, 235, 0.0);
+  --speyer-tour-neutral:            #64748b;
+  --speyer-tour-shadow-lg:          0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.05);
+  --speyer-tour-font:               system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --speyer-tour-font-mono:          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --speyer-tour-text-h3:            20px;
+  --speyer-tour-text-small:         14px;
+  --speyer-tour-text-meta:          12px;
+  --speyer-tour-weight-semi:        600;
+  --speyer-tour-leading-heading:    1.3;
+  --speyer-tour-leading-body:       1.5;
+  --speyer-tour-space-1:            4px;
+  --speyer-tour-space-2:            8px;
+  --speyer-tour-space-3:            16px;
+  --speyer-tour-space-4:            24px;
+  --speyer-tour-duration-fast:      150ms;
+  --speyer-tour-duration-norm:      250ms;
+  --speyer-tour-easing:             ease-out;
+  --speyer-tour-btn-primary-bg:     #2563eb;
+  --speyer-tour-btn-primary-hover:  #1d4ed8;
+  --speyer-tour-z:                  9000;
+}
+
+/* Standalone dark mode (when SUI is not managing themes) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --speyer-tour-overlay:           rgba(0, 0, 0, 0.75);
+    --speyer-tour-bg:                #161e2c;
+    --speyer-tour-border:            #242f3e;
+    --speyer-tour-text-primary:      #f8fafc;
+    --speyer-tour-text-secondary:    #94a3b8;
+    --speyer-tour-text-muted:        #8494a9;
+    --speyer-tour-bg-elevated:       #1e293b;
+    --speyer-tour-blue:              #60a5fa;
+    --speyer-tour-blue-hover:        #3b82f6;
+    --speyer-tour-blue-active:       #2563eb;
+    --speyer-tour-blue-focus:        #60a5fa;
+    --speyer-tour-blue-ring:         rgba(96, 165, 250, 0.3);
+    --speyer-tour-blue-ring-out:     rgba(96, 165, 250, 0.0);
+    --speyer-tour-shadow-lg:         0 12px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.2);
+    --speyer-tour-btn-primary-bg:    #2563eb;
+    --speyer-tour-btn-primary-hover: #1d4ed8;
+  }
+}
+
+[data-theme="dark"] {
+  --speyer-tour-overlay:           rgba(0, 0, 0, 0.75);
+  --speyer-tour-bg:                #161e2c;
+  --speyer-tour-border:            #242f3e;
+  --speyer-tour-text-primary:      #f8fafc;
+  --speyer-tour-text-secondary:    #94a3b8;
+  --speyer-tour-text-muted:        #8494a9;
+  --speyer-tour-bg-elevated:       #1e293b;
+  --speyer-tour-blue:              #60a5fa;
+  --speyer-tour-blue-hover:        #3b82f6;
+  --speyer-tour-blue-active:       #2563eb;
+  --speyer-tour-blue-focus:        #60a5fa;
+  --speyer-tour-blue-ring:         rgba(96, 165, 250, 0.3);
+  --speyer-tour-blue-ring-out:     rgba(96, 165, 250, 0.0);
+  --speyer-tour-shadow-lg:         0 12px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.2);
+  --speyer-tour-btn-primary-bg:    #2563eb;
+  --speyer-tour-btn-primary-hover: #1d4ed8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --speyer-tour-duration-fast: 0ms;
+    --speyer-tour-duration-norm: 0ms;
+  }
+}
+
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes speyer-ring-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--sui-blue-ring, var(--speyer-tour-blue-ring)); }
+  50%       { box-shadow: 0 0 0 8px var(--sui-blue-ring-out, var(--speyer-tour-blue-ring-out)); }
+}
+
+@keyframes speyer-tooltip-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes speyer-tooltip-in-up {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ==========================================================================
+   Four-panel blocking overlay
+   Replaces the box-shadow hack. These divs genuinely block pointer events
+   in the dark area while leaving the highlighted element naturally accessible.
+   ========================================================================== */
+
+.speyer-tour-panel {
+  position: fixed;
+  z-index:  calc(var(--sui-z-modal, var(--speyer-tour-z)) + 1);
+  background: var(--sui-overlay, var(--speyer-tour-overlay));
+  pointer-events: all; /* blocks clicks in dark area */
+  cursor: default;
+  /* No transitions on panels — they reposition instantly for crisp movement */
+}
+
+.speyer-tour-panel.is-hidden {
+  display: none;
+}
+
+/* Top panel — from viewport top to element top */
+.speyer-tour-panel-top    { top: 0; left: 0; }
+/* Others are fully positioned from JS via style.cssText */
+
+/* Full-screen overlay for floating steps */
+.speyer-tour-overlay {
+  position: fixed;
+  inset:    0;
+  z-index:  calc(var(--sui-z-modal, var(--speyer-tour-z)) + 1);
+  background: var(--sui-overlay, var(--speyer-tour-overlay));
+  pointer-events: all;
+  cursor: default;
+  display: none; /* hidden by default */
+}
+
+.speyer-tour-overlay.is-active {
+  display: block;
+}
+
+
+/* ==========================================================================
+   Highlight ring
+   Sits on top of the panels, over the target element.
+   No background — just a glowing border.
+   ========================================================================== */
+
+.speyer-tour-ring {
+  position:      fixed;
+  z-index:       calc(var(--sui-z-modal, var(--speyer-tour-z)) + 2);
+  box-sizing:    border-box;
+  border:        2px solid var(--sui-blue-primary, var(--speyer-tour-blue));
+  border-radius: var(--sui-radius-sm, var(--speyer-tour-radius-sm));
+  pointer-events: none;
+  animation: speyer-ring-pulse 2.2s ease-in-out infinite;
+}
+
+.speyer-tour-ring.is-hidden {
+  display: none;
+}
+
+
+/* ==========================================================================
+   Tooltip dialog
+   ========================================================================== */
+
+.speyer-tour-tooltip {
+  position:      fixed;
+  z-index:       calc(var(--sui-z-modal, var(--speyer-tour-z)) + 3);
+  box-sizing:    border-box;
+
+  background:    var(--sui-bg-card,     var(--speyer-tour-bg));
+  color:         var(--sui-text-primary, var(--speyer-tour-text-primary));
+  border:        var(--speyer-tour-border-width) solid var(--sui-border, var(--speyer-tour-border));
+  border-radius: var(--sui-radius-lg,   var(--speyer-tour-radius-lg));
+  box-shadow:    var(--sui-shadow-lg,   var(--speyer-tour-shadow-lg));
+
+  padding:    var(--sui-space-4, var(--speyer-tour-space-4));
+  width:      320px; /* overridden by JS config.tooltipWidth */
+  max-width:  calc(100vw - 32px);
+
+  font-family: var(--sui-font-primary, var(--speyer-tour-font));
+  font-size:   var(--sui-text-body, 16px);
+
+  animation: speyer-tooltip-in var(--sui-duration-normal, var(--speyer-tour-duration-norm)) var(--sui-easing, var(--speyer-tour-easing)) both;
+}
+
+/* Floating: CSS-centered, no arrow */
+.speyer-tour-tooltip.is-floating {
+  top:       50% !important;
+  left:      50% !important;
+  transform: translate(-50%, -50%) !important;
+  animation: none; /* centered position doesn't need slide-in */
+}
+
+/* Mobile: snap to bottom, full-bleed width */
+@media (max-width: 639px) {
+  .speyer-tour-tooltip:not(.is-floating) {
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+    max-width: none;
+    animation-name: speyer-tooltip-in; /* always slide up from bottom */
+  }
+}
+
+/* Flip animation for top-placement */
+.speyer-tour-tooltip[data-placement="top"] {
+  animation-name: speyer-tooltip-in-up;
+}
+
+
+/* ==========================================================================
+   Tooltip arrow
+   Rendered via ::before, pointed at the highlighted element.
+   Direction is controlled by [data-placement] attribute set by JS.
+   ========================================================================== */
+
+.speyer-tour-tooltip::before {
+  content:       '';
+  position:      absolute;
+  width:         12px;
+  height:        12px;
+  box-sizing:    border-box;
+  background:    var(--sui-bg-card, var(--speyer-tour-bg));
+  border-left:   1px solid var(--sui-border, var(--speyer-tour-border));
+  border-top:    1px solid var(--sui-border, var(--speyer-tour-border));
+  border-radius: 2px 0 0 0;
+}
+
+/* Bottom placement: tooltip is BELOW element, arrow points UP */
+.speyer-tour-tooltip[data-placement="bottom"]::before {
+  top:       -7px;
+  left:      var(--speyer-arrow-h, 20px);
+  transform: rotate(45deg);
+}
+
+/* Top placement: tooltip is ABOVE element, arrow points DOWN */
+.speyer-tour-tooltip[data-placement="top"]::before {
+  bottom:    -7px;
+  left:      var(--speyer-arrow-h, 20px);
+  transform: rotate(225deg);
+}
+
+/* Right placement: tooltip is RIGHT of element, arrow points LEFT */
+.speyer-tour-tooltip[data-placement="right"]::before {
+  top:       var(--speyer-arrow-v, 20px);
+  left:      -7px;
+  transform: rotate(-45deg);
+}
+
+/* Left placement: tooltip is LEFT of element, arrow points RIGHT */
+.speyer-tour-tooltip[data-placement="left"]::before {
+  top:       var(--speyer-arrow-v, 20px);
+  right:     -7px;
+  transform: rotate(135deg);
+}
+
+/* No arrow on floating steps */
+.speyer-tour-tooltip.is-floating::before { display: none; }
+
+/* No arrow on mobile (tooltip snaps to bottom, arrow makes no sense) */
+@media (max-width: 639px) {
+  .speyer-tour-tooltip:not(.is-floating)::before { display: none; }
+}
+
+
+/* ==========================================================================
+   Title
+   ========================================================================== */
+
+.speyer-tour-title {
+  margin:      0 0 var(--sui-space-2, var(--speyer-tour-space-2)) 0;
+  font-size:   var(--sui-text-h3,    var(--speyer-tour-text-h3));
+  font-weight: var(--sui-weight-semibold, var(--speyer-tour-weight-semi));
+  line-height: var(--sui-leading-heading, var(--speyer-tour-leading-heading));
+  color:       var(--sui-text-primary, var(--speyer-tour-text-primary));
+}
+
+
+/* ==========================================================================
+   Body copy
+   ========================================================================== */
+
+.speyer-tour-content {
+  margin:      0 0 var(--sui-space-3, var(--speyer-tour-space-3)) 0;
+  font-size:   var(--sui-text-small,  var(--speyer-tour-text-small));
+  line-height: var(--sui-leading-body, var(--speyer-tour-leading-body));
+  color:       var(--sui-text-secondary, var(--speyer-tour-text-secondary));
+}
+
+
+/* ==========================================================================
+   Progress indicator
+   ========================================================================== */
+
+.speyer-tour-progress {
+  display:       flex;
+  align-items:   center;
+  gap:           var(--sui-space-1, var(--speyer-tour-space-1));
+  margin-bottom: var(--sui-space-3, var(--speyer-tour-space-3));
+}
+
+.speyer-tour-dot {
+  width:         8px;
+  height:        8px;
+  border-radius: var(--sui-radius-full, var(--speyer-tour-radius-full));
+  background:    var(--sui-border, var(--speyer-tour-border));
+  flex-shrink:   0;
+  transition:
+    background var(--sui-duration-fast, var(--speyer-tour-duration-fast)) var(--sui-easing, var(--speyer-tour-easing)),
+    transform  var(--sui-duration-fast, var(--speyer-tour-duration-fast)) var(--sui-easing, var(--speyer-tour-easing));
+}
+
+.speyer-tour-dot.is-done   { background: var(--sui-neutral, var(--speyer-tour-neutral)); }
+.speyer-tour-dot.is-active { background: var(--sui-blue-primary, var(--speyer-tour-blue)); transform: scale(1.35); }
+
+.speyer-tour-step-label {
+  margin-left:  auto;
+  font-size:    var(--sui-text-meta, var(--speyer-tour-text-meta));
+  font-weight:  var(--sui-weight-semibold, var(--speyer-tour-weight-semi));
+  color:        var(--sui-text-muted, var(--speyer-tour-text-muted));
+  white-space:  nowrap;
+}
+
+
+/* ==========================================================================
+   Divider
+   ========================================================================== */
+
+.speyer-tour-divider {
+  margin:  var(--sui-space-3, var(--speyer-tour-space-3))
+           calc(var(--sui-space-4, var(--speyer-tour-space-4)) * -1)
+           var(--sui-space-3, var(--speyer-tour-space-3));
+  border:     none;
+  border-top: 1px solid var(--sui-border, var(--speyer-tour-border));
+}
+
+
+/* ==========================================================================
+   Controls
+   ========================================================================== */
+
+.speyer-tour-controls {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  gap:             var(--sui-space-2, var(--speyer-tour-space-2));
+}
+
+.speyer-tour-controls-right {
+  display: flex;
+  gap:     var(--sui-space-2, var(--speyer-tour-space-2));
+}
+
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.speyer-tour-btn {
+  box-sizing:    border-box;
+  min-height:    36px;
+  padding:       0 var(--sui-space-2, var(--speyer-tour-space-2));
+  border:        1px solid var(--sui-border, var(--speyer-tour-border));
+  border-radius: var(--sui-radius-md, var(--speyer-tour-radius-md));
+  background:    var(--sui-bg-card, var(--speyer-tour-bg));
+  color:         var(--sui-text-secondary, var(--speyer-tour-text-secondary));
+  font-family:   var(--sui-font-primary, var(--speyer-tour-font));
+  font-size:     var(--sui-text-meta, var(--speyer-tour-text-meta));
+  font-weight:   var(--sui-weight-semibold, var(--speyer-tour-weight-semi));
+  display:       inline-flex;
+  align-items:   center;
+  cursor:        pointer;
+  white-space:   nowrap;
+  user-select:   none;
+  transition:
+    background   var(--sui-duration-fast, var(--speyer-tour-duration-fast)) var(--sui-easing, var(--speyer-tour-easing)),
+    border-color var(--sui-duration-fast, var(--speyer-tour-duration-fast)) var(--sui-easing, var(--speyer-tour-easing)),
+    color        var(--sui-duration-fast, var(--speyer-tour-duration-fast)) var(--sui-easing, var(--speyer-tour-easing)),
+    transform    var(--sui-duration-fast, var(--speyer-tour-duration-fast)) var(--sui-easing, var(--speyer-tour-easing));
+}
+
+.speyer-tour-btn:hover {
+  background:   var(--sui-bg-elevated, var(--speyer-tour-bg-elevated));
+  color:        var(--sui-text-primary, var(--speyer-tour-text-primary));
+  border-color: var(--sui-blue-focus,  var(--speyer-tour-blue-focus));
+  transform:    translateY(-1px);
+}
+
+.speyer-tour-btn:active { transform: translateY(0); }
+
+.speyer-tour-btn-primary {
+  background:   var(--sui-btn-primary-bg, var(--speyer-tour-btn-primary-bg));
+  border-color: transparent;
+  color:        var(--sui-text-inverse, var(--speyer-tour-text-inverse));
+}
+
+.speyer-tour-btn-primary:hover {
+  background:   var(--sui-btn-primary-bg-hover, var(--speyer-tour-btn-primary-hover));
+  border-color: transparent;
+  color:        var(--sui-text-inverse, var(--speyer-tour-text-inverse));
+}
+
+.speyer-tour-btn-primary:active {
+  background: var(--sui-blue-active, var(--speyer-tour-blue-active));
+}
+
+.speyer-tour-btn:focus-visible {
+  outline:        3px solid var(--sui-blue-soft, var(--speyer-tour-blue-focus));
+  outline-offset: 2px;
+}
+
+.speyer-tour-btn-icon {
+  display:        inline-flex;
+  align-items:    center;
+  vertical-align: middle;
+}
+
+
+/* ==========================================================================
+   High contrast
+   ========================================================================== */
+
+@media (prefers-contrast: more) {
+  :root { --speyer-tour-border-width: 2px; }
+
+  .speyer-tour-ring               { border-width: 3px; }
+  .speyer-tour-btn                { border-width: 2px; }
+  .speyer-tour-btn:focus-visible  { outline-width: 4px; }
+  .speyer-tour-dot.is-active      { outline: 2px solid var(--sui-blue-primary, var(--speyer-tour-blue)); outline-offset: 2px; }
+}
+
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .speyer-tour-ring     { animation: none; }
+  .speyer-tour-tooltip  { animation: none; }
+  .speyer-tour-dot      { transition: none; }
+
+  .speyer-tour-btn:hover,
+  .speyer-tour-btn:active { transform: none; }
+
+  /* Preserve floating centering transform — only suppress animation on non-floating */
+  .speyer-tour-tooltip:not(.is-floating) { transition: none; }
+}

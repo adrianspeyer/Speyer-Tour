@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speyer Tour v2.0.0 — Demo</title>
+
+  <!--
+    ═══════════════════════════════════════════════
+    DEMO uses Speyer UI System (SUI) v3.3.0 for
+    its own layout. Speyer Tour has ZERO dependencies
+    and works with any CSS system or none at all.
+    See the integration examples section below.
+    ═══════════════════════════════════════════════
+  -->
+
+  <!-- SUI 3.3.0 — for this demo's layout only -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-tokens.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-components.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui.min.js" defer></script>
+
+  <!-- SUI Icon sprite injection -->
+  <script defer>
+    fetch('https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-icons.min.svg')
+      .then(function(r){return r.text()})
+      .then(function(svg){var d=document.createElement('div');d.style.display='none';d.setAttribute('aria-hidden','true');d.innerHTML=svg;document.body.prepend(d);});
+  </script>
+
+  <!-- Speyer Tour: must load AFTER SUI tokens so SUI takes precedence -->
+  <link rel="stylesheet" href="./src/speyer-tour.css">
+
+  <style>
+    /* ── App Shell ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: var(--sui-bg-primary);
+      color: var(--sui-text-primary);
+      font-family: var(--sui-font-primary);
+    }
+
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ───────────────────────────────────────────── */
+    .app-sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--sui-bg-card);
+      border-right: 1px solid var(--sui-border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 50;
+      overflow-y: auto;
+    }
+
+    .sidebar-brand {
+      padding: var(--sui-space-4);
+      border-bottom: 1px solid var(--sui-border);
+      font-size: var(--sui-text-h3);
+      font-weight: var(--sui-weight-bold);
+      display: flex;
+      align-items: center;
+      gap: var(--sui-space-2);
+      color: var(--sui-text-primary);
+      text-decoration: none;
+    }
+
+    .sidebar-section-label {
+      padding: var(--sui-space-3) var(--sui-space-4) var(--sui-space-1);
+      font-size: var(--sui-text-meta);
+      font-weight: var(--sui-weight-semibold);
+      color: var(--sui-text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .sidebar-nav { padding: var(--sui-space-2); flex: 1; }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: var(--sui-space-2);
+      padding: var(--sui-space-2) var(--sui-space-3);
+      border-radius: var(--sui-radius-md);
+      color: var(--sui-text-secondary);
+      font-size: var(--sui-text-small);
+      font-weight: var(--sui-weight-semibold);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background var(--sui-duration-fast) var(--sui-easing),
+                  color var(--sui-duration-fast) var(--sui-easing);
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.is-active {
+      background: var(--sui-bg-elevated);
+      color: var(--sui-text-primary);
+    }
+
+    .sidebar-link.is-active { color: var(--sui-blue-primary); }
+
+    .sidebar-link .sui-icon { font-size: 1.125rem; flex-shrink: 0; }
+
+    .sidebar-footer {
+      padding: var(--sui-space-3) var(--sui-space-4);
+      border-top: 1px solid var(--sui-border);
+    }
+
+    /* ── Main content area ─────────────────────────────────── */
+    .app-main {
+      margin-left: 240px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ── Top bar ───────────────────────────────────────────── */
+    .app-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      height: 60px;
+      background: color-mix(in srgb, var(--sui-bg-card) 88%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--sui-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--sui-space-5);
+      gap: var(--sui-space-3);
+    }
+
+    .topbar-title {
+      font-size: var(--sui-text-h3);
+      font-weight: var(--sui-weight-bold);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sui-space-2);
+    }
+
+    /* ── Page content ──────────────────────────────────────── */
+    .app-content {
+      padding: var(--sui-space-5);
+      max-width: 1200px;
+    }
+
+    .page-header {
+      margin-bottom: var(--sui-space-5);
+    }
+
+    .page-header h1 {
+      margin: 0 0 var(--sui-space-2) 0;
+      font-size: var(--sui-text-h1);
+      font-weight: var(--sui-weight-bold);
+    }
+
+    .page-header p {
+      margin: 0;
+      color: var(--sui-text-secondary);
+    }
+
+    /* ── Stats row ─────────────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sui-space-4);
+      margin-bottom: var(--sui-space-5);
+    }
+
+    .stat-card {
+      background: var(--sui-bg-card);
+      border: 1px solid var(--sui-border);
+      border-radius: var(--sui-radius-lg);
+      padding: var(--sui-space-4);
+    }
+
+    .stat-label {
+      font-size: var(--sui-text-small);
+      color: var(--sui-text-muted);
+      margin-bottom: var(--sui-space-1);
+    }
+
+    .stat-value {
+      font-size: var(--sui-text-h2);
+      font-weight: var(--sui-weight-bold);
+      margin-bottom: var(--sui-space-2);
+      line-height: 1.2;
+    }
+
+    /* ── Two-column layout ─────────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: var(--sui-space-4);
+      margin-bottom: var(--sui-space-5);
+    }
+
+    /* ── Activity table ────────────────────────────────────── */
+    .activity-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sui-space-3);
+      padding: var(--sui-space-3) 0;
+      border-bottom: 1px solid var(--sui-border);
+    }
+    .activity-row:last-child { border-bottom: none; }
+
+    .activity-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--sui-blue-soft);
+      color: var(--sui-blue-strong);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--sui-text-meta);
+      font-weight: var(--sui-weight-bold);
+      flex-shrink: 0;
+    }
+
+    .activity-meta { flex: 1; min-width: 0; }
+    .activity-name { font-weight: var(--sui-weight-semibold); font-size: var(--sui-text-small); }
+    .activity-time { font-size: var(--sui-text-meta); color: var(--sui-text-muted); }
+
+    /* ── Quick actions ─────────────────────────────────────── */
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--sui-space-3);
+      width: 100%;
+      padding: var(--sui-space-3);
+      border: 1px solid var(--sui-border);
+      border-radius: var(--sui-radius-md);
+      background: var(--sui-bg-card);
+      color: var(--sui-text-primary);
+      font-size: var(--sui-text-small);
+      font-weight: var(--sui-weight-semibold);
+      cursor: pointer;
+      text-align: left;
+      transition: background var(--sui-duration-fast) var(--sui-easing),
+                  border-color var(--sui-duration-fast) var(--sui-easing),
+                  transform var(--sui-duration-fast) var(--sui-easing);
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .quick-action-btn:hover {
+      background: var(--sui-bg-elevated);
+      border-color: var(--sui-blue-focus);
+      transform: translateY(-1px);
+    }
+
+    .quick-action-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--sui-radius-sm);
+      background: var(--sui-blue-soft);
+      color: var(--sui-blue-primary);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Notice banner ─────────────────────────────────────── */
+    .demo-notice {
+      background: var(--sui-info-soft);
+      border-bottom: 1px solid var(--sui-border);
+      padding: var(--sui-space-2) var(--sui-space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--sui-space-2);
+      font-size: var(--sui-text-small);
+      color: var(--sui-info-strong);
+    }
+
+    /* ── Code examples ─────────────────────────────────────── */
+    pre {
+      background: var(--sui-bg-elevated);
+      border: 1px solid var(--sui-border);
+      border-radius: var(--sui-radius-md);
+      padding: var(--sui-space-4);
+      overflow-x: auto;
+      font-family: var(--sui-font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 0;
+      color: var(--sui-text-primary);
+    }
+
+    .code-tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: var(--sui-space-2) var(--sui-space-3);
+      font-size: var(--sui-text-small);
+      font-weight: var(--sui-weight-semibold);
+      color: var(--sui-text-secondary);
+      cursor: pointer;
+      font-family: inherit;
+      transition: color var(--sui-duration-fast) var(--sui-easing),
+                  border-color var(--sui-duration-fast) var(--sui-easing);
+    }
+
+    .code-tab-btn[aria-selected="true"] {
+      border-bottom-color: var(--sui-blue-primary);
+      color: var(--sui-blue-primary);
+    }
+
+    .code-panel { display: none; }
+    .code-panel.is-active { display: block; }
+
+    /* ── Responsive: collapse sidebar on mobile ─────────────── */
+    @media (max-width: 768px) {
+      .app-sidebar { display: none; }
+      .app-main    { margin-left: 0; }
+      .app-topbar  { padding: 0 var(--sui-space-4); }
+      .app-content { padding: var(--sui-space-4); }
+      .stats-row   { grid-template-columns: repeat(2, 1fr); }
+      .two-col     { grid-template-columns: 1fr; }
+      .demo-notice { padding: var(--sui-space-2) var(--sui-space-4); }
+    }
+
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ═══ Sidebar ════════════════════════════════════════════════════════ -->
+  <aside class="app-sidebar">
+    <a class="sidebar-brand" href="#" id="sidebar-brand">
+      <svg class="sui-icon sui-icon-xl" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--sui-blue-primary);"><use href="#sui-icon-ai-zap"/></svg>
+      MatchPoint
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
+
+      <button class="sidebar-link is-active" id="sidebar-dashboard">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-ui-layout-dashboard"/></svg> Dashboard
+      </button>
+
+      <button class="sidebar-link" id="sidebar-events">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-time-calendar"/></svg> Events
+        <span class="sui-badge sui-badge-info" style="margin-left:auto; font-size:10px;">7</span>
+      </button>
+
+      <button class="sidebar-link" id="sidebar-attendees">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-nav-users"/></svg> Attendees
+      </button>
+
+      <button class="sidebar-link" id="sidebar-matches">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-data-git-merge"/></svg> Matches
+      </button>
+
+      <div class="sidebar-section-label" style="margin-top:var(--sui-space-2);">Reporting</div>
+
+      <button class="sidebar-link" id="sidebar-analytics">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-data-bar-chart"/></svg> Analytics
+      </button>
+
+      <button class="sidebar-link">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-file-text"/></svg> Reports
+      </button>
+
+      <div class="sidebar-section-label" style="margin-top:var(--sui-space-2);">Config</div>
+
+      <button class="sidebar-link" id="sidebar-settings">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-nav-settings"/></svg> Settings
+      </button>
+
+      <button class="sidebar-link">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-dev-plug"/></svg> Integrations
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div style="display:flex; align-items:center; gap:var(--sui-space-2);">
+        <div class="sui-avatar sui-avatar-sm" style="background:var(--sui-pro-soft); color:var(--sui-pro-strong);">AS</div>
+        <div>
+          <div style="font-size:var(--sui-text-small); font-weight:var(--sui-weight-semibold);">Adrian Speyer</div>
+          <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted);">Admin</div>
+        </div>
+        <button class="sui-btn sui-btn-ghost sui-btn-sm" style="margin-left:auto;" data-sui-theme aria-label="Toggle theme">
+          <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-ui-sun"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══ Main ══════════════════════════════════════════════════════════ -->
+  <div class="app-main">
+
+    <!-- Demo notice banner -->
+    <div class="demo-notice">
+      <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink:0;"><use href="#sui-icon-status-info"/></svg>
+      <span>
+        <strong>Demo note:</strong> This layout uses Speyer UI v3.3.0 + SUI Icons. Speyer Tour itself has zero dependencies — works with any CSS or none.
+        <a href="#code-examples" style="color:inherit; font-weight:var(--sui-weight-semibold);">See standalone code ↓</a>
+      </span>
+    </div>
+
+    <!-- Top bar -->
+    <header class="app-topbar">
+      <div class="topbar-title" id="topbar-area">Dashboard</div>
+
+      <div class="topbar-actions">
+        <div style="position:relative;">
+          <button class="sui-btn sui-btn-ghost sui-btn-sm" aria-label="Notifications">
+            <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-nav-bell"/></svg>
+          </button>
+          <span class="sui-badge sui-badge-error"
+                style="position:absolute; top:-4px; right:-4px; min-width:18px; height:18px;
+                       display:flex; align-items:center; justify-content:center;
+                       font-size:10px; padding:0 4px; pointer-events:none;">3</span>
+        </div>
+        <button class="sui-btn sui-btn-primary sui-btn-sm" id="replay-btn">
+          <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-act-repeat"/></svg> Replay Tour
+        </button>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <main class="app-content">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <h1>Good morning, Adrian 👋</h1>
+        <p>Here's what's happening with your events this week.</p>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Weekly Matches</div>
+          <div class="stat-value">1,284</div>
+          <span class="sui-badge sui-badge-success"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-data-trending-up"/></svg> +12%</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Events</div>
+          <div class="stat-value">7</div>
+          <span class="sui-badge sui-badge-info"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-time-calendar"/></svg> This week</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Attendees</div>
+          <div class="stat-value">4,391</div>
+          <span class="sui-badge sui-badge-success"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-nav-users"/></svg> +8%</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Connection Rate</div>
+          <div class="stat-value">84%</div>
+          <span class="sui-badge sui-badge-warning"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-act-target"/></svg> Goal: 90%</span>
+        </div>
+      </div>
+
+      <!-- Two-column layout -->
+      <div class="two-col">
+
+        <!-- Recent activity -->
+        <div class="sui-card sui-card-flush" id="recent-activity">
+          <div class="sui-card-header">
+            <h3 style="margin:0;">Recent Activity</h3>
+            <button class="sui-btn sui-btn-ghost sui-btn-sm">View all</button>
+          </div>
+          <div class="sui-card-body">
+            <div class="activity-row">
+              <div class="activity-avatar">SJ</div>
+              <div class="activity-meta">
+                <div class="activity-name">Sarah Johnson matched with 3 new contacts</div>
+                <div class="activity-time">2 minutes ago · TechConf 2026</div>
+              </div>
+              <span class="sui-badge sui-badge-success"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-status-check"/></svg> Match</span>
+            </div>
+            <div class="activity-row">
+              <div class="activity-avatar" style="background:var(--sui-pro-soft); color:var(--sui-pro-strong);">MK</div>
+              <div class="activity-meta">
+                <div class="activity-name">Mike Kowalski registered for FinTech Summit</div>
+                <div class="activity-time">14 minutes ago</div>
+              </div>
+              <span class="sui-badge sui-badge-info"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-people-user-plus"/></svg> New</span>
+            </div>
+            <div class="activity-row">
+              <div class="activity-avatar" style="background:var(--sui-warning-soft); color:var(--sui-warning-strong);">AT</div>
+              <div class="activity-meta">
+                <div class="activity-name">AI Summit check-in rate is below target</div>
+                <div class="activity-time">1 hour ago</div>
+              </div>
+              <span class="sui-badge sui-badge-warning"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-status-alert-triangle"/></svg> Alert</span>
+            </div>
+            <div class="activity-row">
+              <div class="activity-avatar" style="background:var(--sui-success-soft); color:var(--sui-success-strong);">RD</div>
+              <div class="activity-meta">
+                <div class="activity-name">DevWorld 2026 report generated successfully</div>
+                <div class="activity-time">3 hours ago</div>
+              </div>
+              <span class="sui-badge sui-badge-neutral"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-file-check"/></svg> Report</span>
+            </div>
+            <div class="activity-row">
+              <div class="activity-avatar" style="background:var(--sui-error-soft); color:var(--sui-error-strong);">LP</div>
+              <div class="activity-meta">
+                <div class="activity-name">Laura Park exported attendee list</div>
+                <div class="activity-time">Yesterday at 4:32 PM</div>
+              </div>
+              <span class="sui-badge sui-badge-neutral"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-act-download"/></svg> Export</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick actions panel -->
+        <div>
+          <div class="sui-card sui-card-flush" id="quick-actions" style="margin-bottom:var(--sui-space-4);">
+            <div class="sui-card-header">
+              <h3 style="margin:0;">Quick Actions</h3>
+            </div>
+            <div class="sui-card-body" style="display:flex; flex-direction:column; gap:var(--sui-space-2);">
+              <button class="quick-action-btn">
+                <div class="quick-action-icon"><svg class="sui-icon sui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-act-plus"/></svg></div>
+                <div>
+                  <div>New Event</div>
+                  <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted); font-weight:400;">Set up matchmaking</div>
+                </div>
+              </button>
+              <button class="quick-action-btn">
+                <div class="quick-action-icon" style="background:var(--sui-success-soft); color:var(--sui-success-strong);">
+                  <svg class="sui-icon sui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-people-user-plus"/></svg>
+                </div>
+                <div>
+                  <div>Invite Attendees</div>
+                  <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted); font-weight:400;">Bulk or individual</div>
+                </div>
+              </button>
+              <button class="quick-action-btn">
+                <div class="quick-action-icon" style="background:var(--sui-pro-soft); color:var(--sui-pro-strong);">
+                  <svg class="sui-icon sui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-data-bar-chart"/></svg>
+                </div>
+                <div>
+                  <div>Generate Report</div>
+                  <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted); font-weight:400;">Match stats &amp; exports</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Settings mini-card -->
+          <div class="sui-card sui-card-flush" id="settings-panel">
+            <div class="sui-card-header">
+              <h3 style="margin:0;">Preferences</h3>
+            </div>
+            <div class="sui-card-body" style="display:flex; flex-direction:column; gap:var(--sui-space-3);">
+              <div class="sui-flex-between">
+                <div>
+                  <div class="sui-text-bold" style="font-size:var(--sui-text-small);">Dark Mode</div>
+                  <small class="sui-text-muted">Theme follows system</small>
+                </div>
+                <label class="sui-toggle-label">
+                  <span class="sui-toggle"><input type="checkbox"><span class="sui-toggle-track"></span></span>
+                </label>
+              </div>
+              <hr class="sui-divider">
+              <div class="sui-flex-between">
+                <div>
+                  <div class="sui-text-bold" style="font-size:var(--sui-text-small);">Match Alerts</div>
+                  <small class="sui-text-muted">Real-time notifications</small>
+                </div>
+                <label class="sui-toggle-label">
+                  <span class="sui-toggle"><input type="checkbox" checked><span class="sui-toggle-track"></span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.two-col -->
+
+      <!-- Event log (appears after tour fires callbacks) -->
+      <div id="tour-log" class="sui-card sui-card-muted" style="display:none; margin-bottom:var(--sui-space-5);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--sui-space-2);">
+          <h3 style="margin:0; font-size:var(--sui-text-small); color:var(--sui-text-muted); text-transform:uppercase; letter-spacing:.06em;">Lifecycle Event Log</h3>
+          <button class="sui-btn sui-btn-ghost sui-btn-sm" id="clear-log">Clear</button>
+        </div>
+        <div id="tour-log-entries"
+             style="display:flex; flex-direction:column; gap:var(--sui-space-1);
+                    font-size:var(--sui-text-small); font-family:var(--sui-font-mono);
+                    color:var(--sui-text-secondary); max-height:200px; overflow-y:auto;"></div>
+      </div>
+
+      <!-- Code examples -->
+      <div id="code-examples" class="sui-card sui-card-flush" style="margin-bottom:var(--sui-space-5);">
+        <div class="sui-card-header">
+          <h3 style="margin:0;">Integration Examples</h3>
+          <span class="sui-badge sui-badge-neutral">Copy &amp; Paste</span>
+        </div>
+        <div class="sui-card-body">
+          <!-- Tab bar -->
+          <div role="tablist" style="display:flex; border-bottom:1px solid var(--sui-border); margin-bottom:var(--sui-space-4); margin: 0 calc(var(--sui-space-4) * -1) var(--sui-space-4); padding: 0 var(--sui-space-4);">
+            <button role="tab" class="code-tab-btn" id="tab-sui" aria-selected="true" aria-controls="panel-sui">
+              With Speyer UI (recommended)
+            </button>
+            <button role="tab" class="code-tab-btn" id="tab-standalone" aria-selected="false" aria-controls="panel-standalone">
+              Standalone (zero deps)
+            </button>
+            <button role="tab" class="code-tab-btn" id="tab-callbacks" aria-selected="false" aria-controls="panel-callbacks">
+              Lifecycle callbacks
+            </button>
+            <button role="tab" class="code-tab-btn" id="tab-i18n" aria-selected="false" aria-controls="panel-i18n">
+              Multi-lingual
+            </button>
+          </div>
+
+          <div id="panel-sui" class="code-panel is-active" role="tabpanel">
+            <p style="color:var(--sui-text-secondary); font-size:var(--sui-text-small); margin:0 0 var(--sui-space-3);">
+              Load SUI tokens before speyer-tour.css and the tour inherits dark mode, high contrast, reduced motion, and your full colour system automatically.
+            </p>
+<pre>&lt;!-- 1. SUI tokens (load first) --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-tokens.min.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-components.min.css"&gt;
+
+&lt;!-- 2. Speyer Tour (after SUI) --&gt;
+&lt;link rel="stylesheet" href="speyer-tour.css"&gt;
+&lt;script type="module"&gt;
+  import { SpeyerTour } from './speyer-tour.js';
+
+  const tour = new SpeyerTour({
+    tourId: 'welcome-tour',
+    steps: [
+      { target: null,         title: 'Welcome!',   content: 'Let\'s take a look around.' },
+      { target: '#sidebar',   title: 'Navigation', content: 'All sections here.',    placement: 'right' },
+      { target: '#dashboard', title: 'Dashboard',  content: 'Your data lives here.', placement: 'bottom' },
+      { target: null,         title: 'All done!',  content: 'You\'re ready to go.' },
+    ],
+  });
+  tour.start(); // Runs once, respects localStorage
+&lt;/script&gt;</pre>
+          </div>
+
+          <div id="panel-standalone" class="code-panel" role="tabpanel">
+            <p style="color:var(--sui-text-secondary); font-size:var(--sui-text-small); margin:0 0 var(--sui-space-3);">
+              Zero dependencies. The CSS has its own light/dark defaults. Works with Bootstrap, Tailwind, your own stylesheet, or a blank page.
+            </p>
+<pre>&lt;!-- Just Speyer Tour --&gt;
+&lt;link rel="stylesheet" href="speyer-tour.css"&gt;
+&lt;script type="module"&gt;
+  import { SpeyerTour } from './speyer-tour.js';
+
+  const tour = new SpeyerTour({
+    tourId:       'onboarding',
+    padding:      10,           // px around highlighted element (default: 8)
+    tooltipWidth: 340,          // tooltip width in px (default: 320)
+    allowClose:   true,         // click dark area to close (default: false)
+    steps: [
+      { target: '#logo',    title: 'Welcome!', content: 'Here is your app.',  placement: 'bottom' },
+      { target: '#nav',     title: 'Navigate', content: 'Sections here.',     placement: 'right' },
+      { target: '#actions', title: 'Actions',  content: 'Common tasks here.', placement: 'bottom' },
+    ],
+  });
+  tour.start();
+&lt;/script&gt;</pre>
+          </div>
+
+          <div id="panel-callbacks" class="code-panel" role="tabpanel">
+            <p style="color:var(--sui-text-secondary); font-size:var(--sui-text-small); margin:0 0 var(--sui-space-3);">
+              Hook into every step for analytics, side effects, or triggering UI changes (like opening a menu before the tour highlights something inside it).
+            </p>
+<pre>const tour = new SpeyerTour({
+  tourId: 'onboarding',
+  steps: [...],
+
+  onStart: ({ tourId }) =&gt;
+    analytics.track('tour_start', { tourId }),
+
+  onStep: ({ tourId, stepIndex, step }) =&gt;
+    analytics.track('tour_step', { stepIndex, title: step.title }),
+
+  onComplete: ({ tourId }) =&gt;
+    analytics.track('tour_complete', { tourId }),
+
+  onSkip: ({ tourId, stepIndex }) =&gt;
+    analytics.track('tour_skip', { at: stepIndex }),
+});
+
+// API
+tour.start()        // Start (checks localStorage, no-op if done)
+tour.start(true)    // Force-start, ignore localStorage
+tour.reset()        // Clear flag and restart (silent — no callbacks)
+tour.next()         // Advance one step
+tour.back()         // Go back one step
+tour.close()        // Close now, record as skipped
+tour.isActive       // boolean</pre>
+          </div>
+
+          <div id="panel-i18n" class="code-panel" role="tabpanel">
+            <p style="color:var(--sui-text-secondary); font-size:var(--sui-text-small); margin:0 0 var(--sui-space-3);">
+              Pass a <code>labels</code> object to localise all button text and the step counter. Partial overrides are supported — only set what you need.
+            </p>
+<pre>const tour = new SpeyerTour({
+  tourId: 'bienvenue',
+  labels: {
+    skip:   'Passer',
+    back:   'Retour',
+    next:   'Suivant',
+    finish: 'Terminer',
+    stepOf: '{current} sur {total}',
+  },
+  steps: [
+    { target: null,       title: 'Bienvenue !', content: 'Faisons un tour rapide.' },
+    { target: '#sidebar', title: 'Navigation',  content: 'Toutes les sections.', placement: 'right' },
+    { target: null,       title: 'C\'est fini', content: 'Vous êtes prêt !' },
+  ],
+});
+
+// Default labels (English):
+// SpeyerTour.DEFAULT_LABELS = {
+//   skip:   'Skip tour',
+//   back:   'Back',
+//   next:   'Next',
+//   finish: 'Finish',
+//   stepOf: '{current} / {total}',
+// };</pre>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /.app-main -->
+</div><!-- /.app-shell -->
+
+
+<!-- ═══ Speyer Tour ════════════════════════════════════════════════════ -->
+<script type="module">
+  import { SpeyerTour } from './src/speyer-tour.js';
+
+  // ── Event log ──────────────────────────────────────────────────────
+  function log(emoji, msg) {
+    const wrap    = document.getElementById('tour-log');
+    const entries = document.getElementById('tour-log-entries');
+    wrap.style.display = 'block';
+    const row = document.createElement('div');
+    row.textContent = `${emoji}  ${msg}`;
+    entries.prepend(row); // newest first
+    if (window.SUI?.toast) SUI.toast.success(msg);
+  }
+
+  // ── Tour ───────────────────────────────────────────────────────────
+  const tour = new SpeyerTour({
+    tourId:   'speyer-tour-demo-v2-0',
+    padding:  8,
+    allowClose: false, // set to true to let users click the dark area to close
+
+    steps: [
+      {
+        // Floating intro — no element, full-screen backdrop, centred tooltip
+        target:  null,
+        title:   'Welcome to Speyer Tour v2.0',
+        content: 'Zero-dependency, WCAG 2.2 AA accessible product tours. Four-panel blocking overlay, directional arrow, ring pulse, auto-flip placement, multi-lingual labels, and native Speyer UI 3.3.0 integration.'
+      },
+      {
+        // Sidebar brand — right placement, arrow points left
+        target:    '#sidebar-brand',
+        title:     'Your App',
+        content:   'The brand mark and primary navigation live in the sidebar. Notice the pulsing ring around this element — it draws attention without distracting.',
+        placement: 'right'
+      },
+      {
+        // Sidebar nav item — right placement
+        target:    '#sidebar-events',
+        title:     'Events',
+        content:   'Jump to your events list from the sidebar. The badge shows 7 active events this week.',
+        placement: 'right'
+      },
+      {
+        // Top bar — bottom placement
+        target:    '#topbar-area',
+        title:     'Page Header',
+        content:   'This sticky header shows the current section and houses your primary actions. On mobile the sidebar collapses and these controls become the main nav point.',
+        placement: 'bottom'
+      },
+      {
+        // Stats row — bottom placement
+        target:    '#stats-row',
+        title:     'At-a-Glance Metrics',
+        content:   'Four key stats surface right on the dashboard. Click any card to drill into the full report.',
+        placement: 'bottom'
+      },
+      {
+        // Activity feed
+        target:    '#recent-activity',
+        title:     'Live Activity Feed',
+        content:   'Every match, registration, and alert appears here in real time. Filter by event or export the log as a CSV.',
+        placement: 'top'
+      },
+      {
+        // Quick actions
+        target:    '#quick-actions',
+        title:     'Quick Actions',
+        content:   'Create events, invite attendees, and pull reports — all in two clicks from right here.',
+        placement: 'left'
+      },
+      {
+        // Settings
+        target:    '#settings-panel',
+        title:     'Preferences',
+        content:   'Dark mode follows your system preference automatically. Match alerts can be muted per event.',
+        placement: 'left'
+      },
+      {
+        // Sidebar settings link
+        target:    '#sidebar-settings',
+        title:     'Full Settings',
+        content:   'For integrations, team management, and billing, head to the Settings section in the sidebar.',
+        placement: 'right'
+      },
+      {
+        // Floating outro
+        target:  null,
+        title:   'You\'re all set! 🎉',
+        content: 'That\'s a full Speyer Tour. Check the Lifecycle Event Log — every step, skip, and completion fires a callback you can hook into for analytics.'
+      }
+    ],
+
+    onStart:    ({ tourId })            => log('🚀', `Tour "${tourId}" started`),
+    onStep:     ({ stepIndex, step })   => log('👣', `Step ${stepIndex + 1}: "${step.title}"`),
+    onComplete: ({ tourId })            => log('✅', `Tour "${tourId}" completed`),
+    onSkip:     ({ tourId, stepIndex }) => log('⏭', `Skipped at step ${stepIndex + 1}`)
+  });
+
+  tour.start();
+
+  // Replay
+  document.getElementById('replay-btn').addEventListener('click', () => {
+    document.getElementById('tour-log-entries').innerHTML = '';
+    document.getElementById('tour-log').style.display = 'none';
+    tour.reset();
+  });
+
+  // Clear log
+  document.getElementById('clear-log').addEventListener('click', () => {
+    document.getElementById('tour-log-entries').innerHTML = '';
+    document.getElementById('tour-log').style.display = 'none';
+  });
+
+  // Code tabs
+  document.querySelectorAll('[role="tab"]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('[role="tab"]').forEach(t => t.setAttribute('aria-selected', 'false'));
+      document.querySelectorAll('.code-panel').forEach(p => p.classList.remove('is-active'));
+      tab.setAttribute('aria-selected', 'true');
+      document.getElementById(tab.getAttribute('aria-controls')).classList.add('is-active');
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+# Speyer Tour v2.0.0 — Cursor IDE Rules
+
+## When to use
+Implement SpeyerTour when the user requests an onboarding tour, product walkthrough, or tutorial overlay.
+
+## Setup
+```html
+<!-- With SUI (recommended) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-tokens.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-components.min.css">
+<link rel="stylesheet" href="./src/speyer-tour.css">
+
+<!-- Standalone (zero deps) -->
+<link rel="stylesheet" href="./src/speyer-tour.css">
+```
+
+## Pattern
+```js
+import { SpeyerTour } from './src/speyer-tour.js';
+
+const tour = new SpeyerTour({
+  tourId: 'unique-id',
+  // Optional: labels for i18n
+  // labels: { skip: 'Passer', back: 'Retour', next: 'Suivant', finish: 'Terminer', stepOf: '{current} sur {total}' },
+  steps: [
+    { target: null,       title: 'Welcome',    content: 'Intro text.' },
+    { target: '#element', title: 'Feature',    content: 'Description.', placement: 'right' },
+    { target: null,       title: 'All done!',  content: 'Outro text.' },
+  ],
+  onComplete: ({ tourId }) => console.log('done'),
+});
+tour.start();
+```
+
+## Rules
+- target: CSS selector or null (floating step)
+- title/content: plain text only (textContent, XSS-safe)
+- placement: 'bottom' | 'top' | 'left' | 'right' (auto-flips)
+- labels: partial overrides supported (only set what you need)
+- SUI CSS must load BEFORE speyer-tour.css
+- No hardcoded coordinates — library uses getBoundingClientRect()
