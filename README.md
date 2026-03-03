@@ -4,8 +4,7 @@
 ![License](https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square)
 ![Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen?style=flat-square)
 ![WCAG](https://img.shields.io/badge/WCAG-2.2_AA-success?style=flat-square)
-![SUI Compatible](https://img.shields.io/badge/Speyer_UI-3.3.0-blueviolet?style=flat-square)
-![Made in Canada](https://img.shields.io/badge/Made_in-Canada-red?style=flat-square)
+![SUI Compatible](https://img.shields.io/badge/Speyer_UI-3.3.1-blueviolet?style=flat-square)
 
 Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps. Works standalone or as the native onboarding layer of the [Speyer UI](https://github.com/adrianspeyer/speyer-ui) design system.
 
@@ -21,8 +20,8 @@ Load SUI tokens before `speyer-tour.css`. The tour inherits your full design sys
 
 ```html
 <!-- 1. SUI tokens first -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-tokens.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-components.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-tokens.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-components.min.css">
 
 <!-- 2. Speyer Tour after SUI tokens -->
 <link rel="stylesheet" href="./src/speyer-tour.css">
@@ -99,6 +98,16 @@ tour.start();
 
 ---
 
+## Demo
+
+The `index.html` demo renders a **CRM dashboard** (Nimbus CRM) built with Speyer UI 3.3.1 and SUI Icons. It exercises every Speyer Tour feature across 10 steps: floating intro/outro slides, all four placement directions, the pulsing highlight ring, auto-flip, lifecycle callbacks logged to an on-page event log, and a Replay button for repeated testing.
+
+The demo also includes light interactivity — sidebar navigation switches pages, quick-action buttons fire toast notifications, and the dark-mode toggle syncs with the theme — to show how Speyer Tour overlays on a working interface without interfering with it.
+
+**Speyer Tour itself has zero dependencies.** The demo uses SUI for its own layout; see the "Integration Examples" section inside the demo for standalone, callback, and multi-lingual code snippets.
+
+---
+
 ## File Structure
 
 ```
@@ -106,7 +115,7 @@ speyer-tour/
 ├── src/
 │   ├── speyer-tour.js      Core library (~7 KB unminified)
 │   └── speyer-tour.css     Styles with standalone defaults + SUI integration
-├── index.html              Full-featured demo (SUI 3.3.0 + SUI Icons)
+├── index.html              Full-featured CRM demo (SUI 3.3.1 + SUI Icons)
 ├── ai-instructions/
 │   ├── instructions.md     Claude Code system prompt
 │   ├── .cursorrules        Cursor IDE rules
@@ -423,4 +432,4 @@ First production release.
 
 [MIT](./LICENSE) — free for personal and commercial use.
 
-Created by [Adrian Speyer](https://github.com/adrianspeyer). Made in Canada 🇨🇦
+Created by [Adrian Speyer](https://github.com/adrianspeyer).

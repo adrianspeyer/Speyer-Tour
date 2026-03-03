@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speyer Tour v2.0.0 — Demo</title>
+  <title>Speyer Tour v3.0.0 — Demo</title>
 
   <!--
     ═══════════════════════════════════════════════
-    DEMO uses Speyer UI System (SUI) v3.3.0 for
+    DEMO uses Speyer UI System (SUI) v3.3.1 for
     its own layout. Speyer Tour has ZERO dependencies
     and works with any CSS system or none at all.
     See the integration examples section below.
     ═══════════════════════════════════════════════
   -->
 
-  <!-- SUI 3.3.0 — for this demo's layout only -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-tokens.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-components.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-icons.min.css">
-  <script src="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui.min.js" defer></script>
+  <!-- SUI 3.3.1 — for this demo's layout only -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-tokens.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-components.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui.min.js" defer></script>
 
   <!-- SUI Icon sprite injection -->
   <script defer>
-    fetch('https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-icons.min.svg')
+    fetch('https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-icons.min.svg')
       .then(function(r){return r.text()})
       .then(function(svg){var d=document.createElement('div');d.style.display='none';d.setAttribute('aria-hidden','true');d.innerHTML=svg;document.body.prepend(d);});
   </script>
@@ -189,6 +189,14 @@
       border: 1px solid var(--sui-border);
       border-radius: var(--sui-radius-lg);
       padding: var(--sui-space-4);
+      cursor: default;
+      transition: border-color var(--sui-duration-fast) var(--sui-easing),
+                  box-shadow var(--sui-duration-fast) var(--sui-easing);
+    }
+
+    .stat-card:hover {
+      border-color: var(--sui-blue-focus);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
     .stat-label {
@@ -345,56 +353,57 @@
   <!-- ═══ Sidebar ════════════════════════════════════════════════════════ -->
   <aside class="app-sidebar">
     <a class="sidebar-brand" href="#" id="sidebar-brand">
-      <svg class="sui-icon sui-icon-xl" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--sui-blue-primary);"><use href="#sui-icon-ai-zap"/></svg>
-      ZebraFlash
+      <svg class="sui-icon sui-icon-xl" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--sui-blue-primary);"><use href="#sui-icon-ai-sparkles"/></svg>
+      Nimbus CRM
     </a>
 
     <nav class="sidebar-nav">
       <div class="sidebar-section-label">Main</div>
 
-      <button class="sidebar-link is-active" id="sidebar-dashboard">
+      <button class="sidebar-link is-active" id="sidebar-dashboard" data-page="Dashboard">
         <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-ui-layout-dashboard"/></svg> Dashboard
       </button>
 
-      <button class="sidebar-link" id="sidebar-events">
-        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-time-calendar"/></svg> Events
-        <span class="sui-badge sui-badge-info" style="margin-left:auto; font-size:10px;">7</span>
+      <button class="sidebar-link" id="sidebar-contacts" data-page="Contacts">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-people-contact"/></svg> Contacts
+        <span class="sui-badge sui-badge-info" style="margin-left:auto; font-size:10px;">312</span>
       </button>
 
-      <button class="sidebar-link" id="sidebar-attendees">
-        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-nav-users"/></svg> Attendees
+      <button class="sidebar-link" id="sidebar-deals" data-page="Deals">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-misc-briefcase"/></svg> Deals
       </button>
 
-      <button class="sidebar-link" id="sidebar-matches">
-        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-data-git-merge"/></svg> Matches
+      <button class="sidebar-link" id="sidebar-tasks" data-page="Tasks">
+        <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-act-clipboard-check"/></svg> Tasks
+        <span class="sui-badge sui-badge-warning" style="margin-left:auto; font-size:10px;">5</span>
       </button>
 
       <div class="sidebar-section-label" style="margin-top:var(--sui-space-2);">Reporting</div>
 
-      <button class="sidebar-link" id="sidebar-analytics">
+      <button class="sidebar-link" id="sidebar-analytics" data-page="Analytics">
         <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-data-bar-chart"/></svg> Analytics
       </button>
 
-      <button class="sidebar-link">
+      <button class="sidebar-link" data-page="Reports">
         <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-file-text"/></svg> Reports
       </button>
 
       <div class="sidebar-section-label" style="margin-top:var(--sui-space-2);">Config</div>
 
-      <button class="sidebar-link" id="sidebar-settings">
+      <button class="sidebar-link" id="sidebar-settings" data-page="Settings">
         <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-nav-settings"/></svg> Settings
       </button>
 
-      <button class="sidebar-link">
+      <button class="sidebar-link" data-page="Integrations">
         <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-dev-plug"/></svg> Integrations
       </button>
     </nav>
 
     <div class="sidebar-footer">
       <div style="display:flex; align-items:center; gap:var(--sui-space-2);">
-        <div class="sui-avatar sui-avatar-sm" style="background:var(--sui-pro-soft); color:var(--sui-pro-strong);">AS</div>
+        <div class="sui-avatar sui-avatar-sm" style="background:var(--sui-pro-soft); color:var(--sui-pro-strong);">JD</div>
         <div>
-          <div style="font-size:var(--sui-text-small); font-weight:var(--sui-weight-semibold);">Adrian Speyer</div>
+          <div style="font-size:var(--sui-text-small); font-weight:var(--sui-weight-semibold);">Jane Doe</div>
           <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted);">Admin</div>
         </div>
         <button class="sui-btn sui-btn-ghost sui-btn-sm" style="margin-left:auto;" data-sui-theme aria-label="Toggle theme">
@@ -411,8 +420,8 @@
     <div class="demo-notice">
       <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink:0;"><use href="#sui-icon-status-info"/></svg>
       <span>
-        <strong>Demo note:</strong> This layout uses Speyer UI v3.3.0 + SUI Icons. Speyer Tour itself has zero dependencies — works with any CSS or none.
-        <a href="#code-examples" style="color:inherit; font-weight:var(--sui-weight-semibold);">See standalone code ↓</a>
+        <strong>Demo:</strong> This CRM layout uses Speyer UI v3.3.1 + SUI Icons. Speyer Tour itself has zero dependencies — works with any CSS or none.
+        <a href="#code-examples" style="color:inherit; font-weight:var(--sui-weight-semibold);">See standalone code&nbsp;↓</a>
       </span>
     </div>
 
@@ -441,31 +450,31 @@
 
       <!-- Page header -->
       <div class="page-header">
-        <h1>Good morning, Adrian 👋</h1>
-        <p>Here's what's happening with your events this week.</p>
+        <h1>Good morning, Jane&nbsp;👋</h1>
+        <p>Here's your pipeline at a glance.</p>
       </div>
 
       <!-- Stats row -->
       <div class="stats-row" id="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Weekly Matches</div>
-          <div class="stat-value">1,284</div>
-          <span class="sui-badge sui-badge-success"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-data-trending-up"/></svg> +12%</span>
+          <div class="stat-label">Monthly Revenue</div>
+          <div class="stat-value">$128,400</div>
+          <span class="sui-badge sui-badge-success"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-data-trending-up"/></svg> +14%</span>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Active Events</div>
-          <div class="stat-value">7</div>
-          <span class="sui-badge sui-badge-info"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-time-calendar"/></svg> This week</span>
+          <div class="stat-label">Open Deals</div>
+          <div class="stat-value">23</div>
+          <span class="sui-badge sui-badge-info"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-misc-briefcase"/></svg> Pipeline</span>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Total Attendees</div>
-          <div class="stat-value">4,391</div>
-          <span class="sui-badge sui-badge-success"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-nav-users"/></svg> +8%</span>
+          <div class="stat-label">Total Contacts</div>
+          <div class="stat-value">1,847</div>
+          <span class="sui-badge sui-badge-success"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-people-contact"/></svg> +31</span>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Connection Rate</div>
-          <div class="stat-value">84%</div>
-          <span class="sui-badge sui-badge-warning"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-act-target"/></svg> Goal: 90%</span>
+          <div class="stat-label">Win Rate</div>
+          <div class="stat-value">62%</div>
+          <span class="sui-badge sui-badge-warning"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-act-target"/></svg> Goal: 70%</span>
         </div>
       </div>
 
@@ -480,41 +489,41 @@
           </div>
           <div class="sui-card-body">
             <div class="activity-row">
-              <div class="activity-avatar">SJ</div>
+              <div class="activity-avatar">KR</div>
               <div class="activity-meta">
-                <div class="activity-name">Sarah Johnson matched with 3 new contacts</div>
-                <div class="activity-time">2 minutes ago · TechConf 2026</div>
+                <div class="activity-name">Kim Reyes closed Acme Corp deal — $42,000</div>
+                <div class="activity-time">5 minutes ago</div>
               </div>
-              <span class="sui-badge sui-badge-success"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-status-check"/></svg> Match</span>
+              <span class="sui-badge sui-badge-success"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-status-check"/></svg> Won</span>
             </div>
             <div class="activity-row">
-              <div class="activity-avatar" style="background:var(--sui-pro-soft); color:var(--sui-pro-strong);">MK</div>
+              <div class="activity-avatar" style="background:var(--sui-pro-soft); color:var(--sui-pro-strong);">TN</div>
               <div class="activity-meta">
-                <div class="activity-name">Mike Kowalski registered for FinTech Summit</div>
-                <div class="activity-time">14 minutes ago</div>
+                <div class="activity-name">Tomas Nguyen added 3 new contacts from webinar</div>
+                <div class="activity-time">22 minutes ago</div>
               </div>
               <span class="sui-badge sui-badge-info"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-people-user-plus"/></svg> New</span>
             </div>
             <div class="activity-row">
-              <div class="activity-avatar" style="background:var(--sui-warning-soft); color:var(--sui-warning-strong);">AT</div>
+              <div class="activity-avatar" style="background:var(--sui-warning-soft); color:var(--sui-warning-strong);">SB</div>
               <div class="activity-meta">
-                <div class="activity-name">AI Summit check-in rate is below target</div>
+                <div class="activity-name">Follow-up overdue: Bright Solutions proposal</div>
                 <div class="activity-time">1 hour ago</div>
               </div>
-              <span class="sui-badge sui-badge-warning"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-status-alert-triangle"/></svg> Alert</span>
+              <span class="sui-badge sui-badge-warning"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-status-alert-triangle"/></svg> Overdue</span>
             </div>
             <div class="activity-row">
-              <div class="activity-avatar" style="background:var(--sui-success-soft); color:var(--sui-success-strong);">RD</div>
+              <div class="activity-avatar" style="background:var(--sui-success-soft); color:var(--sui-success-strong);">ML</div>
               <div class="activity-meta">
-                <div class="activity-name">DevWorld 2026 report generated successfully</div>
+                <div class="activity-name">Monthly pipeline report generated</div>
                 <div class="activity-time">3 hours ago</div>
               </div>
               <span class="sui-badge sui-badge-neutral"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-file-check"/></svg> Report</span>
             </div>
             <div class="activity-row">
-              <div class="activity-avatar" style="background:var(--sui-error-soft); color:var(--sui-error-strong);">LP</div>
+              <div class="activity-avatar" style="background:var(--sui-error-soft); color:var(--sui-error-strong);">AP</div>
               <div class="activity-meta">
-                <div class="activity-name">Laura Park exported attendee list</div>
+                <div class="activity-name">Alex Park exported Q1 contacts to CSV</div>
                 <div class="activity-time">Yesterday at 4:32 PM</div>
               </div>
               <span class="sui-badge sui-badge-neutral"><svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-act-download"/></svg> Export</span>
@@ -529,29 +538,29 @@
               <h3 style="margin:0;">Quick Actions</h3>
             </div>
             <div class="sui-card-body" style="display:flex; flex-direction:column; gap:var(--sui-space-2);">
-              <button class="quick-action-btn">
+              <button class="quick-action-btn" data-action="new-deal">
                 <div class="quick-action-icon"><svg class="sui-icon sui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-act-plus"/></svg></div>
                 <div>
-                  <div>New Event</div>
-                  <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted); font-weight:400;">Set up matchmaking</div>
+                  <div>New Deal</div>
+                  <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted); font-weight:400;">Add to your pipeline</div>
                 </div>
               </button>
-              <button class="quick-action-btn">
+              <button class="quick-action-btn" data-action="add-contact">
                 <div class="quick-action-icon" style="background:var(--sui-success-soft); color:var(--sui-success-strong);">
                   <svg class="sui-icon sui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-people-user-plus"/></svg>
                 </div>
                 <div>
-                  <div>Invite Attendees</div>
-                  <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted); font-weight:400;">Bulk or individual</div>
+                  <div>Add Contact</div>
+                  <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted); font-weight:400;">Single or bulk import</div>
                 </div>
               </button>
-              <button class="quick-action-btn">
+              <button class="quick-action-btn" data-action="send-email">
                 <div class="quick-action-icon" style="background:var(--sui-pro-soft); color:var(--sui-pro-strong);">
-                  <svg class="sui-icon sui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-data-bar-chart"/></svg>
+                  <svg class="sui-icon sui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><use href="#sui-icon-comm-send"/></svg>
                 </div>
                 <div>
-                  <div>Generate Report</div>
-                  <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted); font-weight:400;">Match stats &amp; exports</div>
+                  <div>Send Email</div>
+                  <div style="font-size:var(--sui-text-meta); color:var(--sui-text-muted); font-weight:400;">Templates &amp; sequences</div>
                 </div>
               </button>
             </div>
@@ -569,17 +578,17 @@
                   <small class="sui-text-muted">Theme follows system</small>
                 </div>
                 <label class="sui-toggle-label">
-                  <span class="sui-toggle"><input type="checkbox"><span class="sui-toggle-track"></span></span>
+                  <span class="sui-toggle"><input type="checkbox" id="toggle-dark"><span class="sui-toggle-track"></span></span>
                 </label>
               </div>
               <hr class="sui-divider">
               <div class="sui-flex-between">
                 <div>
-                  <div class="sui-text-bold" style="font-size:var(--sui-text-small);">Match Alerts</div>
-                  <small class="sui-text-muted">Real-time notifications</small>
+                  <div class="sui-text-bold" style="font-size:var(--sui-text-small);">Email Notifications</div>
+                  <small class="sui-text-muted">Deal updates &amp; reminders</small>
                 </div>
                 <label class="sui-toggle-label">
-                  <span class="sui-toggle"><input type="checkbox" checked><span class="sui-toggle-track"></span></span>
+                  <span class="sui-toggle"><input type="checkbox" id="toggle-notifs" checked><span class="sui-toggle-track"></span></span>
                 </label>
               </div>
             </div>
@@ -588,7 +597,7 @@
 
       </div><!-- /.two-col -->
 
-      <!-- Event log (appears after tour fires callbacks) -->
+      <!-- Tour event log (appears after tour fires callbacks) -->
       <div id="tour-log" class="sui-card sui-card-muted" style="display:none; margin-bottom:var(--sui-space-5);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--sui-space-2);">
           <h3 style="margin:0; font-size:var(--sui-text-small); color:var(--sui-text-muted); text-transform:uppercase; letter-spacing:.06em;">Lifecycle Event Log</h3>
@@ -628,8 +637,8 @@
               Load SUI tokens before speyer-tour.css and the tour inherits dark mode, high contrast, reduced motion, and your full colour system automatically.
             </p>
 <pre>&lt;!-- 1. SUI tokens (load first) --&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-tokens.min.css"&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-components.min.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-tokens.min.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-components.min.css"&gt;
 
 &lt;!-- 2. Speyer Tour (after SUI) --&gt;
 &lt;link rel="stylesheet" href="speyer-tour.css"&gt;
@@ -756,9 +765,58 @@ tour.isActive       // boolean</pre>
     if (window.SUI?.toast) SUI.toast.success(msg);
   }
 
+  // ── Light interactivity ────────────────────────────────────────────
+
+  // Sidebar navigation: highlight active item + update topbar title
+  document.querySelectorAll('.sidebar-link[data-page]').forEach(link => {
+    link.addEventListener('click', () => {
+      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('is-active'));
+      link.classList.add('is-active');
+      const page = link.getAttribute('data-page');
+      document.getElementById('topbar-area').textContent = page;
+    });
+  });
+
+  // Quick actions: show toast feedback
+  document.querySelectorAll('.quick-action-btn[data-action]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.getAttribute('data-action');
+      const messages = {
+        'new-deal':    'New deal form would open here.',
+        'add-contact': 'Contact import dialog would open here.',
+        'send-email':  'Email composer would open here.',
+      };
+      if (window.SUI?.toast) {
+        SUI.toast.info(messages[action] || 'Action triggered.');
+      }
+    });
+  });
+
+  // Dark mode toggle syncs with SUI theme switcher
+  const darkToggle = document.getElementById('toggle-dark');
+  if (darkToggle) {
+    darkToggle.checked = document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    darkToggle.addEventListener('change', () => {
+      const theme = darkToggle.checked ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    });
+  }
+
+  // Notification toggle: just a demo toggle
+  const notifToggle = document.getElementById('toggle-notifs');
+  if (notifToggle) {
+    notifToggle.addEventListener('change', () => {
+      if (window.SUI?.toast) {
+        SUI.toast.info(notifToggle.checked ? 'Email notifications enabled.' : 'Email notifications paused.');
+      }
+    });
+  }
+
   // ── Tour ───────────────────────────────────────────────────────────
   const tour = new SpeyerTour({
-    tourId:   'speyer-tour-demo-v2-0',
+    tourId:   'speyer-tour-crm-demo-v3',
     padding:  8,
     allowClose: false, // set to true to let users click the dark area to close
 
@@ -766,56 +824,56 @@ tour.isActive       // boolean</pre>
       {
         // Floating intro — no element, full-screen backdrop, centred tooltip
         target:  null,
-        title:   'Welcome to Speyer Tour v2.0',
-        content: 'Zero-dependency, WCAG 2.2 AA accessible product tours. Four-panel blocking overlay, directional arrow, ring pulse, auto-flip placement, multi-lingual labels, and native Speyer UI 3.3.0 integration.'
+        title:   'Welcome to Speyer Tour',
+        content: 'Zero-dependency, WCAG 2.2 AA accessible product tours. Four-panel blocking overlay, directional arrow, ring pulse, auto-flip placement, multi-lingual labels, and native Speyer UI integration.'
       },
       {
         // Sidebar brand — right placement, arrow points left
         target:    '#sidebar-brand',
-        title:     'Your App',
-        content:   'The brand mark and primary navigation live in the sidebar. Notice the pulsing ring around this element — it draws attention without distracting.',
+        title:     'Your Brand',
+        content:   'The brand mark and primary navigation live in the sidebar. Notice the pulsing ring around this element — it draws attention without covering content.',
         placement: 'right'
       },
       {
         // Sidebar nav item — right placement
-        target:    '#sidebar-events',
-        title:     'Events',
-        content:   'Jump to your events list from the sidebar. The badge shows 7 active events this week.',
+        target:    '#sidebar-contacts',
+        title:     'Contacts',
+        content:   'Jump to your contact list from the sidebar. The badge shows 312 active contacts in your CRM.',
         placement: 'right'
       },
       {
         // Top bar — bottom placement
         target:    '#topbar-area',
         title:     'Page Header',
-        content:   'This sticky header shows the current section and houses your primary actions. On mobile the sidebar collapses and these controls become the main nav point.',
+        content:   'This sticky header shows the current section and houses your primary actions. On mobile the sidebar collapses and these controls become the main navigation point.',
         placement: 'bottom'
       },
       {
         // Stats row — bottom placement
         target:    '#stats-row',
         title:     'At-a-Glance Metrics',
-        content:   'Four key stats surface right on the dashboard. Click any card to drill into the full report.',
+        content:   'Four key stats surface right on the dashboard — revenue, pipeline, contacts, and win rate. Click any card to drill into the full report.',
         placement: 'bottom'
       },
       {
         // Activity feed
         target:    '#recent-activity',
         title:     'Live Activity Feed',
-        content:   'Every match, registration, and alert appears here in real time. Filter by event or export the log as a CSV.',
+        content:   'Every deal update, new contact, and overdue follow-up appears here in real time. Filter by team member or export the log.',
         placement: 'top'
       },
       {
         // Quick actions
         target:    '#quick-actions',
         title:     'Quick Actions',
-        content:   'Create events, invite attendees, and pull reports — all in two clicks from right here.',
+        content:   'Create deals, add contacts, and send emails — all in two clicks from right here.',
         placement: 'left'
       },
       {
         // Settings
         target:    '#settings-panel',
         title:     'Preferences',
-        content:   'Dark mode follows your system preference automatically. Match alerts can be muted per event.',
+        content:   'Dark mode follows your system preference automatically. Notification controls let you manage alerts per channel.',
         placement: 'left'
       },
       {
@@ -828,8 +886,8 @@ tour.isActive       // boolean</pre>
       {
         // Floating outro
         target:  null,
-        title:   'You\'re all set! 🎉',
-        content: 'That\'s a full Speyer Tour. Check the Lifecycle Event Log — every step, skip, and completion fires a callback you can hook into for analytics.'
+        title:   'You\'re all set!',
+        content: 'That\'s a full Speyer Tour. Check the Lifecycle Event Log below — every step, skip, and completion fires a callback you can hook into for analytics.'
       }
     ],
 
