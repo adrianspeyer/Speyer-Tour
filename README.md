@@ -1,6 +1,6 @@
 # Speyer Tour
 
-![Version](https://img.shields.io/badge/version-3.1.0-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-3.1.1-blue?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square)
 ![Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen?style=flat-square)
 ![WCAG](https://img.shields.io/badge/WCAG-2.2_AA-success?style=flat-square)
@@ -24,11 +24,11 @@ Load SUI tokens before Speyer Tour's CSS. The tour inherits your full design sys
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-components.min.css">
 
 <!-- 2. Speyer Tour after SUI tokens -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css">
 ```
 
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId: 'welcome-tour',
@@ -48,11 +48,11 @@ tour.start(); // Runs once per user (localStorage), then never again
 Works with Bootstrap, Tailwind, your own CSS, or a blank page. The CSS ships its own light/dark/motion defaults.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css">
 ```
 
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId:       'onboarding',
@@ -208,7 +208,7 @@ tour.close()         // Close now, records as skipped, fires onSkip
 tour.destroy()       // Clean teardown — removes DOM + listeners, does NOT write localStorage
 tour.isActive        // boolean — whether a tour is currently running
 
-SpeyerTour.VERSION         // '3.1.0'
+SpeyerTour.VERSION         // '3.1.1'
 SpeyerTour.DEFAULT_LABELS  // { skip, back, next, finish, stepOf }
 ```
 
@@ -358,6 +358,20 @@ Speyer Tour is a code-first library for developers who want full control. If you
 ---
 
 ## Changelog
+
+### v3.1.1 — 2026-06-10
+
+**Fixed (demo accessibility):**
+
+- **Unlabelled toggles (critical).** The Dark Mode and Email Notifications checkboxes had empty `<label>` wrappers — nameless to assistive technology. Now wired to their visible titles via `aria-labelledby`.
+- **Heading order.** Card headings jumped from the page `<h1>` straight to `<h3>`; all section headings are now `<h2>` with the previous visual size preserved via the `--sui-text-h3` token.
+- **Landmark coverage.** The demo notice banner sat outside every landmark; it is now an `<aside aria-label="Demo information">`.
+
+**Changed:**
+
+- **Axe scanner added to tooling.** `npm run axe` scans the demo with axe-core in jsdom (same discipline as Speyer UI). Demo scans clean: 0 violations.
+
+These were pre-existing issues in the demo page only — the library itself is unchanged.
 
 ### v3.1.0 — 2026-06-10
 

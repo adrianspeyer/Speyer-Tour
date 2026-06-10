@@ -1,4 +1,4 @@
-# Speyer Tour v3.1.0 — Cursor IDE Rules
+# Speyer Tour v3.1.1 — Cursor IDE Rules
 
 ## When to use
 Implement SpeyerTour when the user requests an onboarding tour, product walkthrough, or tutorial overlay.
@@ -8,15 +8,15 @@ Implement SpeyerTour when the user requests an onboarding tour, product walkthro
 <!-- With SUI (recommended) — SUI tokens must load BEFORE speyer-tour.css -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-tokens.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-components.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css">
 
 <!-- Standalone (zero deps) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css">
 ```
 
 ## Pattern
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
 // Or non-module: globalThis.SpeyerTour is assigned on load.
 
 const tour = new SpeyerTour({

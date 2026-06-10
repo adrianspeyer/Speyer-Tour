@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Speyer Tour v3.1.0 — LemonCRM Demo</title>
+  <title>Speyer Tour v3.1.1 — LemonCRM Demo</title>
 
   <!--
     ═══════════════════════════════════════════════
@@ -444,7 +444,7 @@
   <div class="app-main">
 
     <!-- Demo notice banner -->
-    <div class="demo-notice">
+    <aside class="demo-notice" aria-label="Demo information">
       <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink:0;"><use href="#sui-icon-status-info"/></svg>
       <span>
         <strong>Demo:</strong> This CRM layout uses Speyer UI v3.5.0 + SUI Icons. Speyer Tour itself has zero dependencies — works with any CSS or none.
@@ -452,7 +452,7 @@
         &nbsp;·&nbsp;
         <a href="https://github.com/adrianspeyer/Speyer-Tour" style="color:inherit; font-weight:var(--sui-weight-semibold);" target="_blank" rel="noopener">GitHub&nbsp;↗</a>
       </span>
-    </div>
+    </aside>
 
     <!-- Top bar -->
     <header class="app-topbar">
@@ -513,7 +513,7 @@
         <!-- Recent activity -->
         <div class="sui-card sui-card-flush" id="recent-activity">
           <div class="sui-card-header">
-            <h3 style="margin:0;">Recent Activity</h3>
+            <h2 style="margin:0; font-size:var(--sui-text-h3);">Recent Activity</h2>
           </div>
           <div class="sui-card-body">
             <div class="activity-row">
@@ -568,7 +568,7 @@
         <div>
           <div class="sui-card sui-card-flush" id="quick-actions" style="margin-bottom:var(--sui-space-4);">
             <div class="sui-card-header">
-              <h3 style="margin:0;">Quick Actions</h3>
+              <h2 style="margin:0; font-size:var(--sui-text-h3);">Quick Actions</h2>
             </div>
             <div class="sui-card-body" style="display:flex; flex-direction:column; gap:var(--sui-space-2);">
               <button class="quick-action-btn" data-action="new-deal">
@@ -602,26 +602,26 @@
           <!-- Settings mini-card -->
           <div class="sui-card sui-card-flush" id="settings-panel">
             <div class="sui-card-header">
-              <h3 style="margin:0;">Preferences</h3>
+              <h2 style="margin:0; font-size:var(--sui-text-h3);">Preferences</h2>
             </div>
             <div class="sui-card-body" style="display:flex; flex-direction:column; gap:var(--sui-space-3);">
               <div class="sui-flex-between">
                 <div>
-                  <div class="sui-text-bold" style="font-size:var(--sui-text-small);">Dark Mode</div>
+                  <div class="sui-text-bold" id="toggle-dark-title" style="font-size:var(--sui-text-small);">Dark Mode</div>
                   <small class="sui-text-muted">Theme follows system</small>
                 </div>
                 <label class="sui-toggle-label">
-                  <span class="sui-toggle"><input type="checkbox" id="toggle-dark"><span class="sui-toggle-track"></span></span>
+                  <span class="sui-toggle"><input type="checkbox" id="toggle-dark" aria-labelledby="toggle-dark-title"><span class="sui-toggle-track"></span></span>
                 </label>
               </div>
               <hr class="sui-divider">
               <div class="sui-flex-between">
                 <div>
-                  <div class="sui-text-bold" style="font-size:var(--sui-text-small);">Email Notifications</div>
+                  <div class="sui-text-bold" id="toggle-notifs-title" style="font-size:var(--sui-text-small);">Email Notifications</div>
                   <small class="sui-text-muted">Deal updates &amp; reminders</small>
                 </div>
                 <label class="sui-toggle-label">
-                  <span class="sui-toggle"><input type="checkbox" id="toggle-notifs" checked><span class="sui-toggle-track"></span></span>
+                  <span class="sui-toggle"><input type="checkbox" id="toggle-notifs" checked aria-labelledby="toggle-notifs-title"><span class="sui-toggle-track"></span></span>
                 </label>
               </div>
             </div>
@@ -633,7 +633,7 @@
       <!-- Tour event log (appears after tour fires callbacks) -->
       <div id="tour-log" class="sui-card sui-card-muted" style="display:none; margin-bottom:var(--sui-space-5);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--sui-space-2);">
-          <h3 style="margin:0; font-size:var(--sui-text-small); color:var(--sui-text-muted); text-transform:uppercase; letter-spacing:.06em;">Lifecycle Event Log</h3>
+          <h2 style="margin:0; font-size:var(--sui-text-small); color:var(--sui-text-muted); text-transform:uppercase; letter-spacing:.06em;">Lifecycle Event Log</h2>
           <button class="sui-btn sui-btn-ghost sui-btn-sm" id="clear-log">Clear</button>
         </div>
         <div id="tour-log-entries"
@@ -645,7 +645,7 @@
       <!-- Code examples -->
       <div id="code-examples" class="sui-card sui-card-flush" style="margin-bottom:var(--sui-space-5);">
         <div class="sui-card-header">
-          <h3 style="margin:0;">Integration Examples</h3>
+          <h2 style="margin:0; font-size:var(--sui-text-h3);">Integration Examples</h2>
           <span class="sui-badge sui-badge-neutral">Copy &amp; Paste</span>
         </div>
         <div class="sui-card-body">
@@ -674,9 +674,9 @@
 &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-components.min.css"&gt;
 
 &lt;!-- 2. Speyer Tour (after SUI) --&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css"&gt;
 &lt;script type="module"&gt;
-  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
+  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
 
   const tour = new SpeyerTour({
     tourId: 'welcome-tour',
@@ -696,9 +696,9 @@
               Zero dependencies. The CSS has its own light/dark defaults. Works with Bootstrap, Tailwind, your own stylesheet, or a blank page.
             </p>
 <pre>&lt;!-- Just Speyer Tour --&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css"&gt;
 &lt;script type="module"&gt;
-  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
+  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
 
   const tour = new SpeyerTour({
     tourId:       'onboarding',
@@ -922,7 +922,7 @@ tour.isActive       // boolean</pre>
         placement: 'right'
       },
       {
-        // Floating outro -- uses contentHTML (new in v3.1.0): opt-in inline
+        // Floating outro -- uses contentHTML (new in v3.1.1): opt-in inline
         // markup via innerHTML. Trusted static strings only -- you own sanitisation.
         target:      null,
         title:       'You\'re all set!',

@@ -1,5 +1,5 @@
 /*!
- * Speyer Tour v3.1.0
+ * Speyer Tour v3.1.1
  * Accessible, zero-dependency tutorial overlays for PWAs and Web Apps.
  * https://github.com/adrianspeyer/speyer-tour
  * MIT License — Made in Canada with love 🇨🇦
@@ -7,7 +7,7 @@
  * Works with any CSS framework or none.
  * Load Speyer UI (SUI) tokens before speyer-tour.css for native design-system integration.
  *
- * What's new in v3.1.0:
+ * What's new in v3.1.1:
  *  - step.contentHTML opt-in — inline markup via innerHTML; integrator owns
  *    sanitisation; default path remains the XSS-safe textContent
  *
@@ -37,7 +37,7 @@ export class SpeyerTour {
   };
 
   /** Library version. */
-  static VERSION = '3.1.0';
+  static VERSION = '3.1.1';
 
   /**
    * @param {object} config
