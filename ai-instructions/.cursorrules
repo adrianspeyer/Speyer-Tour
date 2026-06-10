@@ -1,26 +1,27 @@
-# Speyer Tour v2.0.0 — Cursor IDE Rules
+# Speyer Tour v3.1.0 — Cursor IDE Rules
 
 ## When to use
 Implement SpeyerTour when the user requests an onboarding tour, product walkthrough, or tutorial overlay.
 
 ## Setup
 ```html
-<!-- With SUI (recommended) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-tokens.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.0/dist/sui-components.min.css">
-<link rel="stylesheet" href="./src/speyer-tour.css">
+<!-- With SUI (recommended) — SUI tokens must load BEFORE speyer-tour.css -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-tokens.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-components.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
 
 <!-- Standalone (zero deps) -->
-<link rel="stylesheet" href="./src/speyer-tour.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
 ```
 
 ## Pattern
 ```js
-import { SpeyerTour } from './src/speyer-tour.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
+// Or non-module: globalThis.SpeyerTour is assigned on load.
 
 const tour = new SpeyerTour({
   tourId: 'unique-id',
-  // Optional: labels for i18n
+  // Optional: labels for i18n (partial overrides supported)
   // labels: { skip: 'Passer', back: 'Retour', next: 'Suivant', finish: 'Terminer', stepOf: '{current} sur {total}' },
   steps: [
     { target: null,       title: 'Welcome',    content: 'Intro text.' },
@@ -35,7 +36,12 @@ tour.start();
 ## Rules
 - target: CSS selector or null (floating step)
 - title/content: plain text only (textContent, XSS-safe)
+- contentHTML (optional, per step): opt-in HTML body via innerHTML — takes precedence over content. Trusted static markup only (inline bold/links/code). Never interpolate user input. Prefer content unless inline markup is genuinely needed.
 - placement: 'bottom' | 'top' | 'left' | 'right' (auto-flips)
 - labels: partial overrides supported (only set what you need)
+- Lazy steps for SPAs: steps: () => [...] (evaluated at start())
+- Per-step hooks: onBeforeShow (async-safe, return false to skip), onAfterShow
+- destroy() for SPA route teardown (no localStorage write); close() marks completed
+- goToStep(index) for programmatic navigation; SpeyerTour.VERSION for the version string
 - SUI CSS must load BEFORE speyer-tour.css
 - No hardcoded coordinates — library uses getBoundingClientRect()

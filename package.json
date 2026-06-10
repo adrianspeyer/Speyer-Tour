@@ -1,9 +1,10 @@
 {
   "name": "speyer-tour",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps.",
   "author": "Adrian Speyer",
   "license": "MIT",
+  "type": "module",
   "homepage": "https://adrianspeyer.github.io/speyer-tour/",
   "repository": {
     "type": "git",
@@ -19,7 +20,8 @@
   "scripts": {
     "minify:css": "npx clean-css-cli -o dist/speyer-tour.min.css speyer-tour.css",
     "minify:js": "npx terser speyer-tour.js --comments '/^!/' -o dist/speyer-tour.min.js",
-    "build": "npm run minify:css && npm run minify:js"
+    "build": "npm run minify:css && npm run minify:js && npm run preflight",
+    "preflight": "node scripts/preflight.mjs"
   },
   "devDependencies": {
     "clean-css-cli": "^5.6.3",

@@ -1,4 +1,4 @@
-# Speyer Tour v3.0.1 — System Prompt for Claude Code
+# Speyer Tour v3.1.0 — System Prompt for Claude Code
 
 If the user requests an onboarding tour, product walkthrough, or tutorial overlay, implement it using SpeyerTour.
 
@@ -24,12 +24,12 @@ Speyer Tour has **zero dependencies**. Load only what you need:
 
 ```html
 <!-- Option A: With SUI (recommended — dark mode, tokens, etc. are automatic) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-tokens.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-components.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-tokens.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-components.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
 
 <!-- Option B: Standalone, no SUI, no other dependencies -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
 ```
 
 If using SUI, the tour CSS must load AFTER the SUI token files so SUI tokens take precedence.
@@ -42,6 +42,7 @@ If using SUI, the tour CSS must load AFTER the SUI token files so SUI tokens tak
    - `target` (string | null): CSS selector. `null` for a floating centred step. Good for intros and outros.
    - `title` (string): Step heading. Set via `textContent` — no HTML markup.
    - `content` (string): Step body. Also `textContent` — no HTML.
+   - `contentHTML` (string, optional): Opt-in HTML body via `innerHTML` — takes precedence over `content`. Only use with trusted, static markup (inline bold, links, code). Never interpolate user input. Prefer `content` unless inline markup is genuinely needed.
    - `placement` ('bottom' | 'top' | 'left' | 'right'): Default 'bottom'. Auto-flips.
    - `onBeforeShow` (function, optional): `({ step, stepIndex, tourId })` — Async-safe. Return `false` to skip. Use to navigate SPAs or open menus before the step.
    - `onAfterShow` (function, optional): `({ step, stepIndex, tourId })` — Fires after positioning.
@@ -93,7 +94,7 @@ If using SUI, the tour CSS must load AFTER the SUI token files so SUI tokens tak
 7. **Initialise and call start().**
 
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId: 'unique-tour-id',
@@ -123,7 +124,7 @@ tour.close()         Close, mark completed, fire onSkip
 tour.destroy()       Remove DOM + listeners, no localStorage write, no callbacks
 tour.isActive        boolean
 
-SpeyerTour.VERSION         '3.0.1'
+SpeyerTour.VERSION         '3.1.0'
 SpeyerTour.DEFAULT_LABELS  { skip, back, next, finish, stepOf }
 window.SpeyerTour          Available via globalThis (no import needed in <script type="module">)
 ```

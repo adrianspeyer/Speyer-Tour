@@ -1,5 +1,5 @@
 /*!
- * Speyer Tour v3.0.1
+ * Speyer Tour v3.1.0
  * Accessible, zero-dependency tutorial overlays for PWAs and Web Apps.
  * https://github.com/adrianspeyer/speyer-tour
  * MIT License — Made in Canada with love 🇨🇦
@@ -7,7 +7,11 @@
  * Works with any CSS framework or none.
  * Load Speyer UI (SUI) tokens before speyer-tour.css for native design-system integration.
  *
- * What's new in v3.0.0:
+ * What's new in v3.1.0:
+ *  - step.contentHTML opt-in — inline markup via innerHTML; integrator owns
+ *    sanitisation; default path remains the XSS-safe textContent
+ *
+ * v3.0.0:
  *  - ESM export with global fallback (window.SpeyerTour) for <script type="module">
  *  - destroy() method — clean teardown without writing localStorage
  *  - Per-step onBeforeShow / onAfterShow hooks
@@ -33,7 +37,7 @@ export class SpeyerTour {
   };
 
   /** Library version. */
-  static VERSION = '3.0.1';
+  static VERSION = '3.1.0';
 
   /**
    * @param {object} config
@@ -69,6 +73,11 @@ export class SpeyerTour {
    * @param {string|null} step.target        CSS selector. null = floating centred step.
    * @param {string}      step.title         Heading text (textContent, XSS-safe).
    * @param {string}      step.content       Body text (textContent, XSS-safe).
+   * @param {string}      [step.contentHTML]  Opt-in HTML body. Rendered via innerHTML and takes
+   *                                          precedence over step.content. For inline markup
+   *                                          (bold, links, code). YOU own sanitisation — never
+   *                                          pass unsanitised user input. Default path remains
+   *                                          the XSS-safe step.content.
    * @param {string}      [step.placement]   'bottom'|'top'|'left'|'right'. Default: 'bottom'.
    * @param {function}    [step.onBeforeShow] Async-safe. Called before step renders.
    *                                          Receives { step, stepIndex, tourId }.
@@ -355,9 +364,15 @@ export class SpeyerTour {
       </div>
     `;
 
-    // User content and button labels via textContent only (XSS-safe)
+    // User content and button labels via textContent only (XSS-safe).
+    // Exception: step.contentHTML is an explicit opt-in for inline markup —
+    // the integrator owns sanitisation (documented contract).
     document.getElementById('speyer-tour-title').textContent   = step.title   ?? '';
-    document.getElementById('speyer-tour-desc').textContent    = step.content ?? '';
+    if (step.contentHTML != null) {
+      document.getElementById('speyer-tour-desc').innerHTML    = step.contentHTML;
+    } else {
+      document.getElementById('speyer-tour-desc').textContent  = step.content ?? '';
+    }
     document.getElementById('speyer-tour-counter').textContent = stepLabel;
 
     // Button labels — with optional icon HTML (trusted, from constructor config)

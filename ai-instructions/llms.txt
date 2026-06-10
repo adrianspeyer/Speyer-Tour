@@ -1,4 +1,4 @@
-# Speyer Tour v3.0.1
+# Speyer Tour v3.1.0
 
 > Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps.
 > Works standalone or as the native onboarding layer of the Speyer UI design system.
@@ -14,10 +14,10 @@
 
 ## Quick Start
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
 ```
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId: 'my-app-v1',
@@ -68,7 +68,7 @@ icons: {
 - tour.close() — writes localStorage, fires onSkip
 - tour.destroy() — clean teardown, no localStorage, no callbacks (for SPAs)
 - tour.isActive — boolean
-- SpeyerTour.VERSION — '3.0.1'
+- SpeyerTour.VERSION — '3.1.0'
 - SpeyerTour.DEFAULT_LABELS — { skip, back, next, finish, stepOf }
 - window.SpeyerTour — available via globalThis (no import needed)
 
@@ -88,6 +88,7 @@ icons: {
 - target (string|null) — CSS selector or null for floating
 - title (string) — textContent only, XSS-safe
 - content (string) — textContent only, XSS-safe
+- contentHTML (string, optional) — opt-in HTML body via innerHTML, takes precedence over content; integrator owns sanitisation. Only use with trusted, static markup (inline bold/links/code).
 - placement ('bottom'|'top'|'left'|'right') — auto-flips
 - onBeforeShow (function) — async-safe, return false to skip
 - onAfterShow (function) — fires after positioned

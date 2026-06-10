@@ -1,10 +1,10 @@
 # Speyer Tour
 
-![Version](https://img.shields.io/badge/version-3.0.1-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-3.1.0-blue?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square)
 ![Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen?style=flat-square)
 ![WCAG](https://img.shields.io/badge/WCAG-2.2_AA-success?style=flat-square)
-![SUI Compatible](https://img.shields.io/badge/Speyer_UI-3.3.1-blueviolet?style=flat-square)
+![SUI Compatible](https://img.shields.io/badge/Speyer_UI-3.5.0-blueviolet?style=flat-square)
 
 Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps. Works standalone or as the native onboarding layer of the [Speyer UI](https://github.com/adrianspeyer/speyer-ui) design system.
 
@@ -20,15 +20,15 @@ Load SUI tokens before Speyer Tour's CSS. The tour inherits your full design sys
 
 ```html
 <!-- 1. SUI tokens first -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-tokens.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.3.1/dist/sui-components.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-tokens.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-components.min.css">
 
 <!-- 2. Speyer Tour after SUI tokens -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
 ```
 
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId: 'welcome-tour',
@@ -48,11 +48,11 @@ tour.start(); // Runs once per user (localStorage), then never again
 Works with Bootstrap, Tailwind, your own CSS, or a blank page. The CSS ships its own light/dark/motion defaults.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.css">
 ```
 
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.0.1/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.0/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId:       'onboarding',
@@ -100,7 +100,7 @@ tour.start();
 
 ## Demo
 
-The `index.html` demo renders a **CRM dashboard** (LemonCRM) built with Speyer UI 3.3.1 and SUI Icons. It exercises every Speyer Tour feature across 10 steps: floating intro/outro slides, all four placement directions, the pulsing highlight ring, auto-flip, lifecycle callbacks logged to an on-page event log, and a Replay button for repeated testing.
+The `index.html` demo renders a **CRM dashboard** (LemonCRM) built with Speyer UI 3.5.0 and SUI Icons. It exercises every Speyer Tour feature across 10 steps: floating intro/outro slides, all four placement directions, the pulsing highlight ring, auto-flip, lifecycle callbacks logged to an on-page event log, and a Replay button for repeated testing.
 
 The demo also includes light interactivity — sidebar navigation switches pages, quick-action buttons fire toast notifications, and the dark-mode toggle syncs with the theme — to show how Speyer Tour overlays on a working interface without interfering with it.
 
@@ -117,7 +117,7 @@ speyer-tour/
 ├── dist/
 │   ├── speyer-tour.min.js   Minified JS (~14 KB)
 │   └── speyer-tour.min.css  Minified CSS (~11 KB)
-├── index.html               Full-featured LemonCRM demo (SUI 3.3.1 + SUI Icons)
+├── index.html               Full-featured LemonCRM demo (SUI 3.5.0 + SUI Icons)
 ├── ai-instructions/
 │   ├── instructions.md      Claude Code system prompt
 │   ├── .cursorrules         Cursor IDE rules
@@ -136,6 +136,7 @@ speyer-tour/
 | `target` | `string\|null` | No | CSS selector. `null` = floating centred step (no element highlighted). Useful for intro and outro slides. |
 | `title` | `string` | Yes | Step heading. Injected via `textContent` — no HTML, XSS-safe. |
 | `content` | `string` | Yes | Step body. Also `textContent`. |
+| `contentHTML` | `string` | No | Opt-in HTML body for inline markup (bold, links, code). Rendered via `innerHTML` and takes precedence over `content`. **You own sanitisation** — never pass unsanitised user input. Omit it and the default stays the XSS-safe `content`. |
 | `placement` | `string` | No | `'bottom'` (default) · `'top'` · `'left'` · `'right'`. Auto-flips if tooltip would overflow. On mobile, smart positioning places the tooltip opposite the target's viewport half. |
 | `onBeforeShow` | `function` | No | `({ step, stepIndex, tourId })` — Called before the step renders. Async-safe. Return `false` to skip the step. Use this to navigate SPAs, open menus, or prepare the DOM. |
 | `onAfterShow` | `function` | No | `({ step, stepIndex, tourId })` — Called after the step is positioned and visible. Use for analytics or triggering animations. |
@@ -207,7 +208,7 @@ tour.close()         // Close now, records as skipped, fires onSkip
 tour.destroy()       // Clean teardown — removes DOM + listeners, does NOT write localStorage
 tour.isActive        // boolean — whether a tour is currently running
 
-SpeyerTour.VERSION         // '3.0.1'
+SpeyerTour.VERSION         // '3.1.0'
 SpeyerTour.DEFAULT_LABELS  // { skip, back, next, finish, stepOf }
 ```
 
@@ -357,6 +358,23 @@ Speyer Tour is a code-first library for developers who want full control. If you
 ---
 
 ## Changelog
+
+### v3.1.0 — 2026-06-10
+
+**New:**
+
+- **`contentHTML` per-step opt-in.** Inline markup (bold, links, code) in the step body via `innerHTML`. Takes precedence over `content`. The contract is explicit: you own sanitisation — never pass unsanitised user input. The default path is unchanged and remains the XSS-safe `textContent`.
+
+**Fixed:**
+
+- **Pulse ring now follows your brand colour.** The highlight ring's pulse animation referenced `--sui-blue-ring` / `--sui-blue-ring-out` — tokens that do not exist in Speyer UI. The fallback chain hid it visually, but the ring never inherited SUI colours. The pulse now derives from the real `--sui-blue-primary` via `color-mix()` as a progressive enhancement (older browsers keep the previous standalone behaviour). All 36 SUI tokens referenced by Speyer Tour are verified present in SUI v3.5.0.
+- **Stale SUI pins.** README, demo, and AI-instruction files pinned SUI 3.3.0/3.3.1; all current-state references updated to SUI 3.5.0. `.cursorrules` had drifted all the way back to v2.0.0 with paths to a `src/` folder that doesn't exist — fully rewritten against the v3.1.0 API and repo structure.
+
+**Changed:**
+
+- **`"type": "module"`** added to package.json — the source is ESM; Node consumers now resolve it correctly.
+- **Preflight validator.** New `scripts/preflight.mjs` gates every build (`npm run build` = minify + preflight): version consistency across all files and dist headers, SUI-pin freshness, SUI token parity against a verified allowlist, public-API documentation parity, private-file reference scan, HTML tag balance, and encoding hygiene.
+- **Demo modernised.** LemonCRM demo runs on SUI 3.5.0 and adopts its new pieces where natural: `sui-card-footer` on the activity and code-example cards, a `sui-btn-lg` GitHub CTA, and an outro step that demonstrates `contentHTML` live.
 
 ### v3.0.1 — 2026-03-03
 
