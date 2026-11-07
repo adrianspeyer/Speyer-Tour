@@ -1,5 +1,5 @@
 /*!
- * Speyer Tour v3.1.1
+ * Speyer Tour v3.2.0
  * Accessible, zero-dependency tutorial overlays for PWAs and Web Apps.
  * https://github.com/adrianspeyer/speyer-tour
  * MIT License — Made in Canada with love 🇨🇦
@@ -7,7 +7,11 @@
  * Works with any CSS framework or none.
  * Load Speyer UI (SUI) tokens before speyer-tour.css for native design-system integration.
  *
- * What's new in v3.1.1:
+ * What's new in v3.2.0:
+ *  - Cancellable async rendering, resilient storage, target-aware keyboard scope
+ *  - Scroll/resize tracking, hidden-target recovery, SUI 3.5.2 integration
+ *
+ * v3.1.1:
  *  - step.contentHTML opt-in — inline markup via innerHTML; integrator owns
  *    sanitisation; default path remains the XSS-safe textContent
  *
@@ -37,7 +41,7 @@ export class SpeyerTour {
   };
 
   /** Library version. */
-  static VERSION = '3.1.1';
+  static VERSION = '3.2.0';
 
   /**
    * @param {object} config
@@ -125,6 +129,10 @@ export class SpeyerTour {
     this._resizeObserver  = null;
     this._currentTarget   = null;
 
+    this._renderId = 0;
+    this._direction = 1;
+    this._inertElements = [];
+    this._onFocusIn = this._onFocusIn.bind(this);
     this._onKeydown     = this._onKeydown.bind(this);
     this._onResizeRaw   = this._onResizeRaw.bind(this);
   }
@@ -137,7 +145,7 @@ export class SpeyerTour {
   /** Start the tour. Respects localStorage unless force=true. */
   start(force = false) {
     if (this.isActive) return;
-    if (!force && localStorage.getItem(`speyer_tour_${this.tourId}`)) return;
+    if (!force && this._storage('getItem')) return;
 
     // Resolve lazy steps
     this.steps = typeof this._stepsSource === 'function'
@@ -153,23 +161,29 @@ export class SpeyerTour {
     this.isActive         = true;
     this.currentStepIndex = 0;
 
+    this._direction = 1;
     this._createElements();
-    this._renderStep();
 
     window.addEventListener('resize', this._onResizeRaw);
     document.addEventListener('keydown', this._onKeydown);
+    document.addEventListener('focusin', this._onFocusIn);
+    window.addEventListener('scroll', this._onResizeRaw, true);
+    window.visualViewport?.addEventListener('resize', this._onResizeRaw);
 
-    if (this._cb.onStart) this._cb.onStart({ tourId: this.tourId });
+    this._callHook(this._cb.onStart, { tourId: this.tourId });
+    if (this.isActive) this._renderStep();
   }
 
   /** Clear localStorage and restart. Does not fire onSkip/onComplete. */
   reset() {
     if (this.isActive) this._finish('silent');
-    localStorage.removeItem(`speyer_tour_${this.tourId}`);
+    this._storage('removeItem');
     this.start(true);
   }
 
   next() {
+    if (!this.isActive || !this.steps) return;
+    this._direction = 1;
     if (this.currentStepIndex < this.steps.length - 1) {
       this.currentStepIndex++;
       this._renderStep();
@@ -179,6 +193,8 @@ export class SpeyerTour {
   }
 
   back() {
+    if (!this.isActive || !this.steps) return;
+    this._direction = -1;
     if (this.currentStepIndex > 0) {
       this.currentStepIndex--;
       this._renderStep();
@@ -193,7 +209,9 @@ export class SpeyerTour {
    */
   goToStep(index) {
     if (!this.isActive || !this.steps) return;
-    const clamped = Math.max(0, Math.min(index, this.steps.length - 1));
+    if (!Number.isFinite(index)) return;
+    const clamped = Math.max(0, Math.min(Math.trunc(index), this.steps.length - 1));
+    this._direction = clamped < this.currentStepIndex ? -1 : 1;
     this.currentStepIndex = clamped;
     this._renderStep();
   }
@@ -243,6 +261,7 @@ export class SpeyerTour {
     this._el.tooltip = make('speyer-tour-tooltip', {
       role: 'dialog',
       'aria-modal': 'true',
+      tabindex: '-1',
     });
 
     // Wire overlay click-to-close
@@ -270,6 +289,10 @@ export class SpeyerTour {
   // ─────────────────────────────────────────────────────────────────────────
 
   async _renderStep() {
+    if (!this.isActive) return;
+    this._pendingRender = true;
+    const renderId = ++this._renderId;
+    const isCurrent = () => this.isActive && renderId === this._renderId;
     if (this._positionTimer) {
       clearTimeout(this._positionTimer);
       this._positionTimer = null;
@@ -282,7 +305,6 @@ export class SpeyerTour {
       this._resizeObserver.disconnect();
       this._resizeObserver = null;
     }
-    this._currentTarget = null;
 
     const step    = this.steps[this.currentStepIndex];
     const total   = this.steps.length;
@@ -292,9 +314,17 @@ export class SpeyerTour {
 
     // ── Per-step onBeforeShow hook ──────────────────────────────────────
     if (typeof step.onBeforeShow === 'function') {
-      const result = await step.onBeforeShow({
-        step, stepIndex: this.currentStepIndex, tourId: this.tourId
-      });
+      let result;
+      try {
+        result = await step.onBeforeShow({
+          step, stepIndex: this.currentStepIndex, tourId: this.tourId
+        });
+      } catch (error) {
+        if (!isCurrent()) return;
+        console.error('SpeyerTour: onBeforeShow failed. Skipping step.', error);
+        result = false;
+      }
+      if (!isCurrent()) return;
       // Return false to skip this step (safe — won't overshoot past last step)
       if (result === false) {
         this._skipStep();
@@ -302,23 +332,32 @@ export class SpeyerTour {
       }
     }
 
+    this._restoreBackground();
     const isFloating = !step.target;
-    const targetEl   = isFloating ? null : document.querySelector(step.target);
+    let targetEl = null;
+    try { targetEl = isFloating ? null : document.querySelector(step.target); }
+    catch { /* Invalid selectors use the same recovery as missing targets. */ }
 
     // ── Missing target handling ─────────────────────────────────────────
-    if (!isFloating && !targetEl) {
+    if (!isFloating && !this._isVisible(targetEl)) {
       if (this._cb.onTargetMissing) {
-        this._cb.onTargetMissing({
+        this._callHook(this._cb.onTargetMissing, {
           step, stepIndex: this.currentStepIndex, tourId: this.tourId
         });
       } else {
         console.warn(`SpeyerTour: Target "${step.target}" not found. Skipping step.`);
       }
-      this._skipStep();
+      if (isCurrent()) this._skipStep();
       return;
     }
 
     if (targetEl) targetEl.scrollIntoView({ behavior: 'instant', block: 'center' });
+
+    this._pendingRender = false;
+    this._currentTarget = targetEl;
+    this._isolateBackground(targetEl);
+    // A targeted step includes the external control in its keyboard scope.
+    this._el.tooltip.setAttribute('aria-modal', String(isFloating));
 
     // Toggle modes
     this._el.tooltip.classList.toggle('is-floating', isFloating);
@@ -348,6 +387,7 @@ export class SpeyerTour {
     // dotsHTML is safe (indices are integers). All user-configurable strings
     // (title, content, button labels, step counter) are set via textContent below.
     this._el.tooltip.innerHTML = `
+      <div class="speyer-tour-scroll">
       <div class="speyer-tour-progress" aria-hidden="true">
         ${dotsHTML}
         <span class="speyer-tour-step-label" id="speyer-tour-counter"></span>
@@ -361,6 +401,7 @@ export class SpeyerTour {
           ${!isFirst ? '<button class="speyer-tour-btn" id="speyer-tour-back"></button>' : ''}
           <button class="speyer-tour-btn speyer-tour-btn-primary" id="speyer-tour-next"></button>
         </div>
+      </div>
       </div>
     `;
 
@@ -385,30 +426,33 @@ export class SpeyerTour {
     this._el.tooltip.style.width = isMobileRender ? '' : `${this._cfg.tooltipWidth}px`;
 
     // Accessibility
-    this._el.tooltip.setAttribute('aria-labelledby',  'speyer-tour-title');
+    this._el.tooltip.setAttribute('aria-labelledby',  'speyer-tour-counter speyer-tour-title');
     this._el.tooltip.setAttribute('aria-describedby', 'speyer-tour-desc');
-    this._el.tooltip.setAttribute('aria-label',
-      `Tour step ${current} of ${total}: ${step.title ?? ''}`
-    );
 
     // Buttons
     document.getElementById('speyer-tour-skip').onclick = () => this.close();
     document.getElementById('speyer-tour-next').onclick = () => this.next();
     if (!isFirst) document.getElementById('speyer-tour-back').onclick = () => this.back();
 
+    this._el.tooltip.focus({ preventScroll: true });
+
     // ── Position after scroll confirmation ──────────────────────────────
     if (targetEl && 'IntersectionObserver' in window) {
       this._waitForVisible(targetEl, () => {
+        if (!isCurrent()) return;
         this._positionElements();
-        document.getElementById('speyer-tour-next')?.focus();
+        if (!isCurrent()) return;
+        this._focus(document.getElementById('speyer-tour-next'));
         this._fireAfterShow(step);
       });
     } else {
       // Floating steps or IO not supported — use timeout fallback
       this._positionTimer = setTimeout(() => {
+        if (!isCurrent()) return;
         this._positionTimer = null;
         this._positionElements();
-        document.getElementById('speyer-tour-next')?.focus();
+        if (!isCurrent()) return;
+        this._focus(document.getElementById('speyer-tour-next'));
         this._fireAfterShow(step);
       }, isFloating ? 50 : 400);
     }
@@ -416,16 +460,17 @@ export class SpeyerTour {
     // ── Target resize observation ─────────────────────────────────────
     // If the highlighted element changes size (sidebar collapse, accordion),
     // reposition ring + panels to match.
-    if (targetEl && 'ResizeObserver' in window) {
+    if ('ResizeObserver' in window) {
       this._currentTarget = targetEl;
       this._resizeObserver = new ResizeObserver(() => {
-        if (this.isActive) this._positionElements();
+        if (isCurrent()) this._positionElements();
       });
-      this._resizeObserver.observe(targetEl);
+      if (targetEl) this._resizeObserver.observe(targetEl);
+      this._resizeObserver.observe(this._el.tooltip);
     }
 
     if (this._cb.onStep) {
-      this._cb.onStep({ tourId: this.tourId, stepIndex: this.currentStepIndex, step });
+      this._callHook(this._cb.onStep, { tourId: this.tourId, stepIndex: this.currentStepIndex, step });
     }
   }
 
@@ -435,9 +480,10 @@ export class SpeyerTour {
    * doesn't fire within 500ms (e.g. fixed elements, edge cases).
    */
   _waitForVisible(targetEl, callback) {
+    const renderId = this._renderId;
     let fired = false;
     const done = () => {
-      if (fired) return;
+      if (fired || !this.isActive || renderId !== this._renderId) return;
       fired = true;
       if (this._ioObserver) { this._ioObserver.disconnect(); this._ioObserver = null; }
       if (this._positionTimer) { clearTimeout(this._positionTimer); this._positionTimer = null; }
@@ -456,7 +502,7 @@ export class SpeyerTour {
   /** Fire per-step onAfterShow hook. */
   _fireAfterShow(step) {
     if (typeof step.onAfterShow === 'function') {
-      step.onAfterShow({
+      this._callHook(step.onAfterShow, {
         step, stepIndex: this.currentStepIndex, tourId: this.tourId
       });
     }
@@ -469,11 +515,18 @@ export class SpeyerTour {
    * call next() → _finish('complete') and skip the final floating step.
    */
   _skipStep() {
-    if (this.currentStepIndex < this.steps.length - 1) {
-      this.currentStepIndex++;
-      this._renderStep();
+    const next = this.currentStepIndex + this._direction;
+    if (next >= 0 && next < this.steps.length) {
+      this.currentStepIndex = next;
+      // Avoid recursive stack growth when many targets are unavailable.
+      const renderId = this._renderId;
+      queueMicrotask(() => {
+        if (this.isActive && renderId === this._renderId) this._renderStep();
+      });
+    } else if (this._direction < 0) {
+      this._direction = 1;
+      this.next();
     } else {
-      // Genuinely no more steps — finish the tour
       this._finish('complete');
     }
   }
@@ -507,23 +560,27 @@ export class SpeyerTour {
   // ─────────────────────────────────────────────────────────────────────────
 
   _positionElements() {
-    if (!this.isActive) return;
+    if (!this.isActive || this._pendingRender) return;
 
     const step       = this.steps[this.currentStepIndex];
     const isFloating = !step.target;
     const pad        = this._cfg.padding;
     const margin     = 16;
     const vw         = window.innerWidth;
-    const vh         = window.innerHeight;
+    const vh         = window.visualViewport?.height ?? window.innerHeight;
     const isMobile   = vw < 640;
 
+    this._el.tooltip.style.width = isMobile ? '' : `${this._cfg.tooltipWidth}px`;
     if (isFloating) {
       // Floating: CSS handles centring; nothing to position here
       return;
     }
 
     const targetEl = document.querySelector(step.target);
-    if (!targetEl) return;
+    if (targetEl !== this._currentTarget || !this._isVisible(targetEl)) {
+      this._renderStep();
+      return;
+    }
 
     const rect = targetEl.getBoundingClientRect();
 
@@ -635,6 +692,8 @@ export class SpeyerTour {
   // ─────────────────────────────────────────────────────────────────────────
 
   _finish(reason) {
+    if (!this.isActive) return;
+    ++this._renderId;
     if (this._positionTimer)  { clearTimeout(this._positionTimer); this._positionTimer = null; }
     if (this._resizeRaf)      { cancelAnimationFrame(this._resizeRaf); this._resizeRaf = null; }
     if (this._ioObserver)     { this._ioObserver.disconnect(); this._ioObserver = null; }
@@ -643,8 +702,10 @@ export class SpeyerTour {
 
     // Only write localStorage for intentional completion/skip, not destroy or silent
     if (reason === 'complete' || reason === 'skip') {
-      localStorage.setItem(`speyer_tour_${this.tourId}`, 'completed');
+      this._storage('setItem', 'completed');
     }
+
+    this._restoreBackground();
 
     // Remove all elements
     Object.values(this._el).forEach(el => el?.remove());
@@ -653,14 +714,17 @@ export class SpeyerTour {
 
     window.removeEventListener('resize', this._onResizeRaw);
     document.removeEventListener('keydown', this._onKeydown);
+    document.removeEventListener('focusin', this._onFocusIn);
+    window.removeEventListener('scroll', this._onResizeRaw, true);
+    window.visualViewport?.removeEventListener('resize', this._onResizeRaw);
 
     if (this._previousFocus && typeof this._previousFocus.focus === 'function') {
       this._previousFocus.focus();
     }
     this._previousFocus = null;
 
-    if (reason === 'complete' && this._cb.onComplete) this._cb.onComplete({ tourId: this.tourId });
-    if (reason === 'skip'     && this._cb.onSkip)     this._cb.onSkip({ tourId: this.tourId, stepIndex: this.currentStepIndex });
+    if (reason === 'complete' && this._cb.onComplete) this._callHook(this._cb.onComplete, { tourId: this.tourId });
+    if (reason === 'skip'     && this._cb.onSkip)     this._callHook(this._cb.onSkip, { tourId: this.tourId, stepIndex: this.currentStepIndex });
     // destroy fires no callbacks — clean teardown only
   }
 
@@ -678,29 +742,79 @@ export class SpeyerTour {
     });
   }
 
+  _storage(method, value) {
+    try { return globalThis.localStorage[method](`speyer_tour_${this.tourId}`, value); }
+    catch { return null; } // Storage may be blocked or full; the tour still works.
+  }
+
+  _callHook(hook, context) {
+    if (!hook) return;
+    try {
+      Promise.resolve(hook(context)).catch(error => console.error('SpeyerTour: callback failed.', error));
+    } catch (error) { console.error('SpeyerTour: callback failed.', error); }
+  }
+
+  _isVisible(el) {
+    return !!el && !el.closest('[inert]') && el.getClientRects().length > 0 &&
+      !['hidden', 'collapse'].includes(getComputedStyle(el).visibility);
+  }
+
+  _restoreBackground() {
+    this._inertElements.forEach(el => el.removeAttribute('inert'));
+    this._inertElements = [];
+  }
+
+  _isolateBackground(target) {
+    const owned = Object.values(this._el);
+    const visit = parent => {
+      for (const child of parent.children) {
+        if (owned.includes(child) || child === target || child.hasAttribute('inert')) continue;
+        if (target && child.contains(target)) visit(child);
+        else {
+          child.setAttribute('inert', '');
+          this._inertElements.push(child);
+        }
+      }
+    };
+    visit(document.body);
+  }
+
+  _focusable() {
+    const selector = 'button, [href], input, select, textarea, [tabindex]';
+    const roots = [this._el.tooltip, this._currentTarget].filter(Boolean);
+    return [...new Set(roots.flatMap(root => [root, ...root.querySelectorAll(selector)]))]
+      .filter(el => el.tabIndex >= 0 && !el.matches(':disabled') && this._isVisible(el));
+  }
+
+  _focus(el) {
+    if (!el) return;
+    const inTooltip = this._el.tooltip.contains(el);
+    el.focus({ preventScroll: inTooltip });
+    const scroller = this._el.tooltip.querySelector('.speyer-tour-scroll');
+    if (!inTooltip || !scroller || el === this._el.tooltip) return;
+    const box = scroller.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
+    if (rect.bottom > box.bottom - 4) scroller.scrollTop += rect.bottom - box.bottom + 4;
+    else if (rect.top < box.top + 4) scroller.scrollTop += rect.top - box.top - 4;
+  }
+
+  _onFocusIn(e) {
+    if (!this.isActive || this._el.tooltip.contains(e.target) || this._currentTarget?.contains(e.target)) return;
+    this._el.tooltip.focus({ preventScroll: true });
+  }
+
   _onKeydown(e) {
     if (!this.isActive) return;
-
-    if (e.key === 'Escape') { this.close(); return; }
-
-    if (e.key === 'Tab') {
-      const focusable = Array.from(
-        this._el.tooltip.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )
-      ).filter(el => !el.disabled);
-
-      if (!focusable.length) return;
-      const first = focusable[0];
-      const last  = focusable[focusable.length - 1];
-
-      if (e.shiftKey) {
-        if (document.activeElement === first) { last.focus();  e.preventDefault(); }
-      } else {
-        if (document.activeElement === last)  { first.focus(); e.preventDefault(); }
-      }
-    }
+    if (e.key === 'Escape') { e.preventDefault(); this.close(); return; }
+    if (e.key !== 'Tab') return;
+    const focusable = this._focusable();
+    const index = focusable.indexOf(document.activeElement);
+    const next = index < 0 ? (e.shiftKey ? focusable.length - 1 : 0)
+      : (index + (e.shiftKey ? -1 : 1) + focusable.length) % focusable.length;
+    e.preventDefault();
+    this._focus(focusable[next] || this._el.tooltip);
   }
+
 }
 
 // Global exposure — makes SpeyerTour available on window when loaded

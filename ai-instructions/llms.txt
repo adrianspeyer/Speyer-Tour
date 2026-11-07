@@ -1,6 +1,6 @@
-# Speyer Tour v3.1.1
+# Speyer Tour v3.2.0
 
-> Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps.
+> Zero-dependency, accessibility-focused product tours for PWAs and web apps.
 > Works standalone or as the native onboarding layer of the Speyer UI design system.
 > MIT License. Made in Canada.
 
@@ -14,10 +14,10 @@
 
 ## Quick Start
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.css">
 ```
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId: 'my-app-v1',
@@ -68,7 +68,7 @@ icons: {
 - tour.close() — writes localStorage, fires onSkip
 - tour.destroy() — clean teardown, no localStorage, no callbacks (for SPAs)
 - tour.isActive — boolean
-- SpeyerTour.VERSION — '3.1.1'
+- SpeyerTour.VERSION — '3.2.0'
 - SpeyerTour.DEFAULT_LABELS — { skip, back, next, finish, stepOf }
 - window.SpeyerTour — available via globalThis (no import needed)
 
@@ -101,10 +101,14 @@ icons: {
 - Smart mobile positioning (tooltip opposite target's viewport half)
 - IntersectionObserver scroll confirmation with instant scrolling
 - ResizeObserver on highlighted target (sidebar collapse, accordion)
-- Focus trap + focus restore (WCAG 2.2 AA)
+- Target-aware keyboard scope + focus restore (browser-tested)
 - Escape to close, Tab cycles within tooltip
 - localStorage one-shot (shows once per tourId)
 - Works with or without Speyer UI — standalone dark mode fallbacks
 - Per-step lifecycle hooks for SPA navigation
 - destroy() for clean SPA teardown
 - goToStep() for section-jump navigation
+
+## v3.2 reliability and accessibility
+
+Existing API signatures and storage keys remain compatible; use matching JS/CSS versions. Async hook results are ignored after navigation/reset/teardown; rejected onBeforeShow hooks log and skip. Missing, hidden, inert or invalid-selector targets skip in the navigation direction. onTargetMissing is a notification; prepare/reveal targets in onBeforeShow. Storage failures never prevent dismissal. Floating steps isolate the background; targeted steps keep highlighted controls in the keyboard scope. Run one tour at a time. npm test covers source/dist behavior and browser axe checks; manual screen-reader review is still required for conformance.

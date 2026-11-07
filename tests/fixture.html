@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Tour regression fixture</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/speyer-tour.css">
+<style>body { margin: 20px; } #scroll {height:180px;overflow:auto;margin-top:30px} #spacer {height:1000px} #target {margin:60px} </style>
+</head><body>
+<main><h1>Tour regression fixture</h1><button id="launch">Launch</button><button id="outside">Outside</button>
+<div inert id="owned-inert"><button>Already inert</button></div>
+<div id="scroll"><button id="target">Highlighted action</button><div id="spacer"></div></div>
+<button hidden id="hidden">Hidden</button></main>
+<script type="module">
+const production = new URLSearchParams(location.search).has('dist');
+if (production) document.querySelector('link').href = '/dist/speyer-tour.min.css';
+window.SpeyerTour = (await import(production ? '/dist/speyer-tour.min.js' : '/speyer-tour.js')).SpeyerTour;
+window.ready = true;
+</script></body></html>

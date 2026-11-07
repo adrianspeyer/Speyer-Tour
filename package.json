@@ -1,7 +1,7 @@
 {
   "name": "speyer-tour",
-  "version": "3.1.1",
-  "description": "Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps.",
+  "version": "3.2.0",
+  "description": "Zero-dependency, accessibility-focused product tours for PWAs and web apps.",
   "author": "Adrian Speyer",
   "license": "MIT",
   "type": "module",
@@ -22,12 +22,14 @@
     "minify:js": "npx terser speyer-tour.js --comments '/^!/' -o dist/speyer-tour.min.js",
     "build": "npm run minify:css && npm run minify:js && npm run preflight",
     "preflight": "node scripts/preflight.mjs",
-    "axe": "node scripts/run-axe.mjs"
+    "axe": "node scripts/run-axe.mjs",
+    "test": "playwright test",
+    "qa:browser": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "axe-core": "^4.12.0",
     "clean-css-cli": "^5.6.3",
-    "terser": "^5.46.0",
-    "jsdom": "^25.0.0",
-    "axe-core": "^4.12.0"
+    "terser": "^5.46.0"
   }
 }

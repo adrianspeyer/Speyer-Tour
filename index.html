@@ -4,28 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Speyer Tour v3.1.1 — LemonCRM Demo</title>
+  <title>Speyer Tour v3.2.0 — LemonCRM Demo</title>
 
   <!--
     ═══════════════════════════════════════════════
-    DEMO uses Speyer UI System (SUI) v3.5.0 for
+    DEMO uses Speyer UI System (SUI) v3.5.2 for
     its own layout. Speyer Tour has ZERO dependencies
     and works with any CSS system or none at all.
     See the integration examples section below.
     ═══════════════════════════════════════════════
   -->
 
-  <!-- SUI 3.5.0 — for this demo's layout only -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-tokens.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-components.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-icons.min.css">
-  <script src="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui.min.js" defer></script>
+  <!-- SUI 3.5.2 — for this demo's layout only -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.2/dist/sui-tokens.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.2/dist/sui-components.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.2/dist/sui-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.2/dist/sui.min.js" defer></script>
 
   <!-- SUI Icon sprite injection -->
   <script defer>
-    fetch('https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-icons.min.svg')
-      .then(function(r){return r.text()})
-      .then(function(svg){var d=document.createElement('div');d.style.display='none';d.setAttribute('aria-hidden','true');d.innerHTML=svg;document.body.prepend(d);});
+    fetch('https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.2/dist/sui-icons.min.svg')
+      .then(function(r){if(!r.ok) throw new Error('Icon sprite unavailable');return r.text()})
+      .then(function(svg){var d=document.createElement('div');d.style.display='none';d.setAttribute('aria-hidden','true');d.innerHTML=svg;document.body.prepend(d);})
+      .catch(function(error){console.warn('Speyer Tour demo:', error.message);});
   </script>
 
   <!-- Speyer Tour: must load AFTER SUI tokens so SUI takes precedence -->
@@ -328,6 +329,10 @@
       color: var(--sui-blue-primary);
     }
 
+    .code-tab-btn:focus-visible, pre:focus-visible, #tour-log-entries:focus-visible {
+      outline: 3px solid var(--sui-blue-strong);
+      outline-offset: 3px;
+    }
     .code-panel { display: none; }
     .code-panel.is-active { display: block; }
 
@@ -447,7 +452,7 @@
     <aside class="demo-notice" aria-label="Demo information">
       <svg class="sui-icon" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink:0;"><use href="#sui-icon-status-info"/></svg>
       <span>
-        <strong>Demo:</strong> This CRM layout uses Speyer UI v3.5.0 + SUI Icons. Speyer Tour itself has zero dependencies — works with any CSS or none.
+        <strong>Demo:</strong> This CRM layout uses Speyer UI v3.5.2 + SUI Icons. Speyer Tour itself has zero dependencies — works with any CSS or none.
         <a href="#code-examples" style="color:inherit; font-weight:var(--sui-weight-semibold);">See standalone code&nbsp;↓</a>
         &nbsp;·&nbsp;
         <a href="https://github.com/adrianspeyer/Speyer-Tour" style="color:inherit; font-weight:var(--sui-weight-semibold);" target="_blank" rel="noopener">GitHub&nbsp;↗</a>
@@ -636,7 +641,7 @@
           <h2 style="margin:0; font-size:var(--sui-text-small); color:var(--sui-text-muted); text-transform:uppercase; letter-spacing:.06em;">Lifecycle Event Log</h2>
           <button class="sui-btn sui-btn-ghost sui-btn-sm" id="clear-log">Clear</button>
         </div>
-        <div id="tour-log-entries"
+        <div id="tour-log-entries" tabindex="0" role="region" aria-label="Tour lifecycle events"
              style="display:flex; flex-direction:column; gap:var(--sui-space-1);
                     font-size:var(--sui-text-small); font-family:var(--sui-font-mono);
                     color:var(--sui-text-secondary); max-height:200px; overflow-y:auto;"></div>
@@ -650,33 +655,33 @@
         </div>
         <div class="sui-card-body">
           <!-- Tab bar -->
-          <div role="tablist" style="display:flex; border-bottom:1px solid var(--sui-border); margin-bottom:var(--sui-space-4); margin: 0 calc(var(--sui-space-4) * -1) var(--sui-space-4); padding: 0 var(--sui-space-4);">
-            <button role="tab" class="code-tab-btn" id="tab-sui" aria-selected="true" aria-controls="panel-sui">
+          <div role="tablist" aria-label="Integration examples" style="display:flex; border-bottom:1px solid var(--sui-border); margin-bottom:var(--sui-space-4); margin: 0 calc(var(--sui-space-4) * -1) var(--sui-space-4); padding: 0 var(--sui-space-4);">
+            <button role="tab" class="code-tab-btn" id="tab-sui" aria-selected="true" tabindex="0" aria-controls="panel-sui">
               With Speyer UI (recommended)
             </button>
-            <button role="tab" class="code-tab-btn" id="tab-standalone" aria-selected="false" aria-controls="panel-standalone">
+            <button role="tab" class="code-tab-btn" id="tab-standalone" aria-selected="false" tabindex="-1" aria-controls="panel-standalone">
               Standalone (zero deps)
             </button>
-            <button role="tab" class="code-tab-btn" id="tab-callbacks" aria-selected="false" aria-controls="panel-callbacks">
+            <button role="tab" class="code-tab-btn" id="tab-callbacks" aria-selected="false" tabindex="-1" aria-controls="panel-callbacks">
               Lifecycle callbacks
             </button>
-            <button role="tab" class="code-tab-btn" id="tab-i18n" aria-selected="false" aria-controls="panel-i18n">
+            <button role="tab" class="code-tab-btn" id="tab-i18n" aria-selected="false" tabindex="-1" aria-controls="panel-i18n">
               Multi-lingual
             </button>
           </div>
 
-          <div id="panel-sui" class="code-panel is-active" role="tabpanel">
+          <div id="panel-sui" class="code-panel is-active" role="tabpanel" aria-labelledby="tab-sui" tabindex="0">
             <p style="color:var(--sui-text-secondary); font-size:var(--sui-text-small); margin:0 0 var(--sui-space-3);">
               Load SUI tokens before speyer-tour.css and the tour inherits dark mode, high contrast, reduced motion, and your full colour system automatically.
             </p>
-<pre>&lt;!-- 1. SUI tokens (load first) --&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-tokens.min.css"&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-components.min.css"&gt;
+<pre tabindex="0" role="region" aria-label="SUI integration code">&lt;!-- 1. SUI tokens (load first) --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.2/dist/sui-tokens.min.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.2/dist/sui-components.min.css"&gt;
 
 &lt;!-- 2. Speyer Tour (after SUI) --&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css"&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.css"&gt;
 &lt;script type="module"&gt;
-  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
+  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.js';
 
   const tour = new SpeyerTour({
     tourId: 'welcome-tour',
@@ -691,14 +696,14 @@
 &lt;/script&gt;</pre>
           </div>
 
-          <div id="panel-standalone" class="code-panel" role="tabpanel">
+          <div id="panel-standalone" class="code-panel" role="tabpanel" aria-labelledby="tab-standalone" tabindex="0" hidden>
             <p style="color:var(--sui-text-secondary); font-size:var(--sui-text-small); margin:0 0 var(--sui-space-3);">
               Zero dependencies. The CSS has its own light/dark defaults. Works with Bootstrap, Tailwind, your own stylesheet, or a blank page.
             </p>
-<pre>&lt;!-- Just Speyer Tour --&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css"&gt;
+<pre tabindex="0" role="region" aria-label="Standalone integration code">&lt;!-- Just Speyer Tour --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.css"&gt;
 &lt;script type="module"&gt;
-  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
+  import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.js';
 
   const tour = new SpeyerTour({
     tourId:       'onboarding',
@@ -715,11 +720,11 @@
 &lt;/script&gt;</pre>
           </div>
 
-          <div id="panel-callbacks" class="code-panel" role="tabpanel">
+          <div id="panel-callbacks" class="code-panel" role="tabpanel" aria-labelledby="tab-callbacks" tabindex="0" hidden>
             <p style="color:var(--sui-text-secondary); font-size:var(--sui-text-small); margin:0 0 var(--sui-space-3);">
               Hook into every step for analytics, side effects, or triggering UI changes (like opening a menu before the tour highlights something inside it).
             </p>
-<pre>const tour = new SpeyerTour({
+<pre tabindex="0" role="region" aria-label="Lifecycle callbacks code">const tour = new SpeyerTour({
   tourId: 'onboarding',
   steps: [...],
 
@@ -746,11 +751,11 @@ tour.close()        // Close now, record as skipped
 tour.isActive       // boolean</pre>
           </div>
 
-          <div id="panel-i18n" class="code-panel" role="tabpanel">
+          <div id="panel-i18n" class="code-panel" role="tabpanel" aria-labelledby="tab-i18n" tabindex="0" hidden>
             <p style="color:var(--sui-text-secondary); font-size:var(--sui-text-small); margin:0 0 var(--sui-space-3);">
               Pass a <code>labels</code> object to localise all button text and the step counter. Partial overrides are supported — only set what you need.
             </p>
-<pre>const tour = new SpeyerTour({
+<pre tabindex="0" role="region" aria-label="Translation code">const tour = new SpeyerTour({
   tourId: 'bienvenue',
   labels: {
     skip:   'Passer',
@@ -800,7 +805,6 @@ tour.isActive       // boolean</pre>
     const row = document.createElement('div');
     row.textContent = `${emoji}  ${msg}`;
     entries.prepend(row); // newest first
-    if (window.SUI?.toast) SUI.toast.success(msg);
   }
 
   // ── Light interactivity ────────────────────────────────────────────
@@ -838,7 +842,8 @@ tour.isActive       // boolean</pre>
 
     darkToggle.addEventListener('change', () => {
       const theme = darkToggle.checked ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', theme);
+      if (window.SUI?.theme) SUI.theme.set(theme);
+      else document.documentElement.setAttribute('data-theme', theme);
     });
   }
 
@@ -858,12 +863,12 @@ tour.isActive       // boolean</pre>
     padding:  8,
     allowClose: false, // set to true to let users click the dark area to close
 
-    steps: [
+    steps: () => [
       {
         // Floating intro — no element, full-screen backdrop, centred tooltip
         target:  null,
         title:   'Welcome to Speyer Tour',
-        content: 'Zero-dependency, WCAG 2.2 AA accessible product tours. Four-panel blocking overlay, directional arrow, ring pulse, auto-flip placement, multi-lingual labels, and native Speyer UI integration.'
+        content: 'Zero-dependency, accessibility-focused product tours. Four-panel blocking overlay, directional arrow, ring pulse, auto-flip placement, multi-lingual labels, and native Speyer UI integration.'
       },
       {
         // Sidebar brand — right placement, arrow points left
@@ -922,13 +927,13 @@ tour.isActive       // boolean</pre>
         placement: 'right'
       },
       {
-        // Floating outro -- uses contentHTML (new in v3.1.1): opt-in inline
+        // Floating outro -- uses contentHTML (introduced in v3.1.1): opt-in inline
         // markup via innerHTML. Trusted static strings only -- you own sanitisation.
         target:      null,
         title:       'You\'re all set!',
-        contentHTML: 'That\'s a full Speyer Tour — including this step, which uses the new <code>contentHTML</code> opt-in for <strong>inline markup</strong>. Check the Lifecycle Event Log below; every step, skip, and completion fires a callback you can hook into for analytics.'
+        contentHTML: 'That\'s a full Speyer Tour — including this step, which uses the <code>contentHTML</code> opt-in for <strong>inline markup</strong>. Check the Lifecycle Event Log below; every step, skip, and completion fires a callback you can hook into for analytics.'
       }
-    ],
+    ].filter(step => !window.matchMedia('(max-width: 768px)').matches || !step.target?.startsWith('#sidebar-')),
 
     onStart:    ({ tourId })            => log('🚀', `Tour "${tourId}" started`),
     onStep:     ({ stepIndex, step })   => log('👣', `Step ${stepIndex + 1}: "${step.title}"`),
@@ -951,13 +956,32 @@ tour.isActive       // boolean</pre>
     document.getElementById('tour-log').style.display = 'none';
   });
 
-  // Code tabs
-  document.querySelectorAll('[role="tab"]').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('[role="tab"]').forEach(t => t.setAttribute('aria-selected', 'false'));
-      document.querySelectorAll('.code-panel').forEach(p => p.classList.remove('is-active'));
-      tab.setAttribute('aria-selected', 'true');
-      document.getElementById(tab.getAttribute('aria-controls')).classList.add('is-active');
+  // Accessible automatic-activation tabs, scoped to their tablist.
+  document.querySelectorAll('[role="tablist"]').forEach(list => {
+    const tabs = [...list.querySelectorAll('[role="tab"]')];
+    const activate = (selected, focus = false) => {
+      tabs.forEach(tab => {
+        const active = tab === selected;
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+        const panel = document.getElementById(tab.getAttribute('aria-controls'));
+        panel.hidden = !active;
+        panel.classList.toggle('is-active', active);
+      });
+      if (focus) selected.focus();
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activate(tab));
+      tab.addEventListener('keydown', event => {
+        let next;
+        if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+        if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === 'Home') next = 0;
+        if (event.key === 'End') next = tabs.length - 1;
+        if (next === undefined) return;
+        event.preventDefault();
+        activate(tabs[next], true);
+      });
     });
   });
 </script>

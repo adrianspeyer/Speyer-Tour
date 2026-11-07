@@ -1,4 +1,4 @@
-# Speyer Tour v3.1.1 — AI Prompt Template (ChatGPT / Gemini)
+# Speyer Tour v3.2.0 — AI Prompt Template (ChatGPT / Gemini)
 
 Use this when asking an AI to add a product tour to your app.
 
@@ -6,20 +6,20 @@ Use this when asking an AI to add a product tour to your app.
 
 **Prompt:**
 
-I want to add an onboarding tour to my web app using Speyer Tour v3.1.1. Here are the files: [paste or attach your HTML/JS].
+I want to add an onboarding tour to my web app using Speyer Tour v3.2.0. Here are the files: [paste or attach your HTML/JS].
 
-Speyer Tour is a zero-dependency, WCAG 2.2 AA accessible tour overlay library.
+Speyer Tour is a zero-dependency, accessibility-focused tour overlay library.
 
 Please:
 
 1. Evaluate my app first: Is SUI loaded? Is it an SPA? Are target elements always visible? Is it multi-lingual?
 
 2. Add the tour CSS to `<head>` after any SUI token files:
-   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css">`
+   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.css">`
 
 3. Add a `<script type="module">` at the bottom of `<body>`:
    ```js
-   import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
+   import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.js';
    ```
    (Or use `window.SpeyerTour` if you prefer no import statement.)
 
@@ -45,3 +45,7 @@ Key rules:
 - Per-step hooks: `onBeforeShow` (async, return false to skip) and `onAfterShow`
 - `onTargetMissing` callback for handling missing targets gracefully
 - ResizeObserver tracks highlighted targets that change dimensions
+
+## v3.2 reliability and accessibility
+
+Existing API signatures and storage keys remain compatible; use matching JS/CSS versions. Async hook results are ignored after navigation/reset/teardown; rejected onBeforeShow hooks log and skip. Missing, hidden, inert or invalid-selector targets skip in the navigation direction. onTargetMissing is a notification; prepare/reveal targets in onBeforeShow. Storage failures never prevent dismissal. Floating steps isolate the background; targeted steps keep highlighted controls in the keyboard scope. Run one tour at a time. npm test covers source/dist behavior and browser axe checks; manual screen-reader review is still required for conformance.

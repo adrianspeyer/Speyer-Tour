@@ -30,7 +30,7 @@ const read = (f) => readFileSync(path.join(ROOT, f), 'utf-8');
 
 /** When the demo / docs move to a newer SUI, update this and re-generate
  *  scripts/sui-tokens.allowlist from that SUI release's sui-tokens.css. */
-const SUI_COMPAT = '3.5.0';
+const SUI_COMPAT = '3.5.2';
 
 let pass = 0, fail = 0;
 const ok  = (msg) => { pass++; console.log(`  \u2713 ${msg}`); };

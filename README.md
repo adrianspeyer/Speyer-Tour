@@ -1,12 +1,12 @@
 # Speyer Tour
 
-![Version](https://img.shields.io/badge/version-3.1.1-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-3.2.0-blue?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square)
 ![Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen?style=flat-square)
-![WCAG](https://img.shields.io/badge/WCAG-2.2_AA-success?style=flat-square)
-![SUI Compatible](https://img.shields.io/badge/Speyer_UI-3.5.0-blueviolet?style=flat-square)
+![Accessibility](https://img.shields.io/badge/accessibility-browser_tested-success?style=flat-square)
+![SUI Compatible](https://img.shields.io/badge/Speyer_UI-3.5.2-blueviolet?style=flat-square)
 
-Zero-dependency, WCAG 2.2 AA accessible product tours for PWAs and web apps. Works standalone or as the native onboarding layer of the [Speyer UI](https://github.com/adrianspeyer/speyer-ui) design system.
+Zero-dependency, accessibility-focused product tours for PWAs and web apps. Works standalone or as the native onboarding layer of the [Speyer UI](https://github.com/adrianspeyer/speyer-ui) design system.
 
 **[Live Demo](https://adrianspeyer.github.io/speyer-tour/)** · [GitHub](https://github.com/adrianspeyer/speyer-tour)
 
@@ -20,15 +20,15 @@ Load SUI tokens before Speyer Tour's CSS. The tour inherits your full design sys
 
 ```html
 <!-- 1. SUI tokens first -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-tokens.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.0/dist/sui-components.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.2/dist/sui-tokens.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-ui@3.5.2/dist/sui-components.min.css">
 
 <!-- 2. Speyer Tour after SUI tokens -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.css">
 ```
 
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId: 'welcome-tour',
@@ -48,11 +48,11 @@ tour.start(); // Runs once per user (localStorage), then never again
 Works with Bootstrap, Tailwind, your own CSS, or a blank page. The CSS ships its own light/dark/motion defaults.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.css">
 ```
 
 ```js
-import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.1.1/dist/speyer-tour.min.js';
+import { SpeyerTour } from 'https://cdn.jsdelivr.net/gh/adrianspeyer/speyer-tour@3.2.0/dist/speyer-tour.min.js';
 
 const tour = new SpeyerTour({
   tourId:       'onboarding',
@@ -82,7 +82,7 @@ tour.start();
 | Arrow tracks target centre | ✅ | ✅ | Via Floating UI | — |
 | Auto-flip placement | ✅ | ✅ | Via Floating UI | — |
 | Dark mode automatic | ✅ | Manual | Manual | No |
-| WCAG 2.2 AA focus trap | ✅ | Partial | ✅ | Partial |
+| Keyboard focus management | ✅ | Partial | ✅ | Partial |
 | Focus restore on close | ✅ | — | — | — |
 | XSS-safe content injection | ✅ | — | — | — |
 | Floating (no-target) steps | ✅ | — | ✅ | — |
@@ -100,7 +100,7 @@ tour.start();
 
 ## Demo
 
-The `index.html` demo renders a **CRM dashboard** (LemonCRM) built with Speyer UI 3.5.0 and SUI Icons. It exercises every Speyer Tour feature across 10 steps: floating intro/outro slides, all four placement directions, the pulsing highlight ring, auto-flip, lifecycle callbacks logged to an on-page event log, and a Replay button for repeated testing.
+The `index.html` demo renders a **CRM dashboard** (LemonCRM) built with Speyer UI 3.5.2 and SUI Icons. It exercises every Speyer Tour feature across 10 desktop steps (7 on mobile): floating intro/outro slides, all four placement directions, the pulsing highlight ring, auto-flip, lifecycle callbacks logged to an on-page event log, and a Replay button for repeated testing.
 
 The demo also includes light interactivity — sidebar navigation switches pages, quick-action buttons fire toast notifications, and the dark-mode toggle syncs with the theme — to show how Speyer Tour overlays on a working interface without interfering with it.
 
@@ -117,7 +117,7 @@ speyer-tour/
 ├── dist/
 │   ├── speyer-tour.min.js   Minified JS (~14 KB)
 │   └── speyer-tour.min.css  Minified CSS (~11 KB)
-├── index.html               Full-featured LemonCRM demo (SUI 3.5.0 + SUI Icons)
+├── index.html               Full-featured LemonCRM demo (SUI 3.5.2 + SUI Icons)
 ├── ai-instructions/
 │   ├── instructions.md      Claude Code system prompt
 │   ├── .cursorrules         Cursor IDE rules
@@ -159,7 +159,7 @@ speyer-tour/
 | `onStep` | `function` | — | `({ tourId, stepIndex, step })` |
 | `onComplete` | `function` | — | `({ tourId })` |
 | `onSkip` | `function` | — | `({ tourId, stepIndex })` |
-| `onTargetMissing` | `function` | console.warn + skip | `({ step, stepIndex, tourId })` — Called when a step's target selector isn't found in the DOM. Default behaviour skips the step with a console warning. |
+| `onTargetMissing` | `function` | console.warn + skip | `({ step, stepIndex, tourId })` — Called when a target is missing, hidden, inert, or its selector is invalid. The step is skipped in the navigation direction; this callback is a notification. Prepare targets in `onBeforeShow`. |
 
 ---
 
@@ -208,7 +208,7 @@ tour.close()         // Close now, records as skipped, fires onSkip
 tour.destroy()       // Clean teardown — removes DOM + listeners, does NOT write localStorage
 tour.isActive        // boolean — whether a tour is currently running
 
-SpeyerTour.VERSION         // '3.1.1'
+SpeyerTour.VERSION         // '3.2.0'
 SpeyerTour.DEFAULT_LABELS  // { skip, back, next, finish, stepOf }
 ```
 
@@ -296,10 +296,10 @@ The **arrow** dynamically tracks the centre of the target element — not a hard
 
 | Feature | Detail |
 |---|---|
-| Dialog role | `role="dialog" aria-modal="true"` |
+| Dialog role | `role="dialog"`; floating steps are modal, targeted steps also expose the highlighted control |
 | Labels | `aria-labelledby` + `aria-describedby` per step |
-| SR step counter | `aria-label="Tour step 2 of 5: …"` on the dialog |
-| Focus trap | Tab / Shift-Tab cycle within dialog; disabled elements excluded |
+| SR step counter | The dialog name includes the localized `labels.stepOf` counter and step title |
+| Focus scope | Tab / Shift-Tab cycle through the dialog and visible highlighted controls; hidden, disabled and inert elements excluded |
 | Focus restore | Pre-tour `activeElement` restored on every exit path |
 | Keyboard | Escape closes at any time |
 | XSS safety | `step.title`, `step.content`, and button labels set via `textContent` only |
@@ -357,7 +357,38 @@ Speyer Tour is a code-first library for developers who want full control. If you
 
 ---
 
+### Reliability and compatibility in 3.2
+
+Existing constructor options, method signatures, storage keys, ESM imports and the `globalThis.SpeyerTour` entry point remain supported. No runtime dependencies were added. Use matching 3.2.0 JS and CSS assets together.
+
+- Pending `onBeforeShow` results are ignored after navigation, reset or teardown. A rejected hook logs an error and skips its step. Cancellation stops rendering; it cannot cancel application side effects inside your hook.
+- Missing, hidden and inert targets are skipped in the navigation direction. Use lazy steps to filter responsive layouts, or `onBeforeShow` to reveal a target before rendering. Targets must belong to the document; shadow-root selectors are not supported.
+- Storage is best-effort. If access is blocked or the quota is full, start/reset/close still work; completion might not persist across reloads.
+- Floating steps isolate the background. Targeted steps keep the highlighted control keyboard-accessible alongside the dialog. Existing host-owned `inert` attributes are preserved during cleanup. Applications should run one tour at a time.
+- Scroll containers, viewport resizing and target/tooltip resizing update positioning. Long tooltip content scrolls within the viewport. `next()`/`back()` safely do nothing while inactive; `goToStep()` ignores non-finite values and truncates fractional indices.
+
+### Verification
+
+```sh
+npm ci
+npx playwright install chromium
+npm run build
+npm test          # Source + minified runtime regressions, demo keyboard tests and axe
+npm run axe      # Browser accessibility subset
+```
+
+To use an existing Chrome installation, set `TOUR_BROWSER_EXECUTABLE_PATH` to its executable. The first browser run downloads pinned SUI 3.5.2 assets into the ignored `.cache/` directory; later runs reuse them. Runtime page errors fail the suite. Accessibility scans cover every demo tour step and integration tab in light/dark themes at mobile/desktop widths, using WCAG 2.2 AA rules where available. Incomplete axe checks are reported for manual review. Automated results do not establish full WCAG conformance; screen-reader and other browser testing remain part of application acceptance.
+
 ## Changelog
+
+### v3.2.0 — 2026-11-07
+
+- Updated demo, documentation and token validation to SUI 3.5.2.
+- Fixed async hook races, rejected-hook recovery, storage failures and teardown/listener ordering.
+- Added target-aware keyboard navigation and background isolation with host inert-state preservation; localized the accessible step counter.
+- Added nested-scroll tracking, responsive width updates, hidden-target skipping and bounded long-content scrolling.
+- Fixed mobile demo steps, tab keyboard semantics, code/log scrolling access and sprite-fetch error handling. Lifecycle events stay in the log instead of stacking toasts over the tour.
+- Added browser regressions for source and production builds, real-browser axe coverage, and a dependency lockfile. Replaced the DOM-only scanner; retained its script entry point for the demo.
 
 ### v3.1.1 — 2026-06-10
 
